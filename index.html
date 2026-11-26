@@ -1,0 +1,3010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduNotes — Fiches de Révision &amp; Exercices</title>
+    <style>
+        /* ============================================================================
+           DESIGN TOKENS & RESET
+           ============================================================================ */
+        :root {
+            --bg-light: #f4f6fb;
+            --surface-light: #ffffff;
+            --surface-subtle: #f8fafc;
+            --text-light: #0f172a;
+            --muted-light: #475569;
+            --border-light: #e2e8f0;
+            --primary: #4338ca;
+            --primary-hover: #3730a3;
+            --accent-blue: #0284c7;
+            --success: #059669;
+            --danger: #dc2626;
+
+            --bg-dark: #090d16;
+            --surface-dark: #111827;
+            --surface-dark-2: #182234;
+            --text-dark: #f1f5f9;
+            --muted-dark: #94a3b8;
+            --border-dark: #243047;
+            --neon-cyan: #22d3ee;
+            --neon-indigo: #818cf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            line-height: 1.55;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============================================================================
+           1. FAÇADE SCOLAIRE (THÈME CLAIR)
+           ============================================================================ */
+        #edu-view {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edu-header {
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .edu-header-inner {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .brand-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            user-select: none;
+            padding: 0.25rem 0.4rem;
+            border-radius: 0.65rem;
+            text-align: left;
+        }
+
+        .brand-btn:hover {
+            background: var(--surface-subtle);
+        }
+
+        .brand-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+            display: block;
+            line-height: 1.1;
+        }
+
+        .brand-tag {
+            font-size: 0.72rem;
+            color: var(--muted-light);
+            font-weight: 600;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: 210px;
+            max-width: 360px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.55rem 0.85rem;
+            border-radius: 0.65rem;
+            border: 1px solid var(--border-light);
+            background: var(--surface-subtle);
+            color: var(--text-light);
+            font-size: 0.88rem;
+            outline: none;
+        }
+
+        .search-input:focus {
+            background: var(--surface-light);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.12);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .pomo-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.65rem;
+            background: var(--surface-subtle);
+            border: 1px solid var(--border-light);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 0.52rem 0.9rem;
+            border-radius: 0.65rem;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            padding: 0.48rem 0.8rem;
+            border-radius: 0.65rem;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-subtle);
+            border-color: #cbd5e1;
+        }
+
+        .edu-main {
+            max-width: 1240px;
+            width: 100%;
+            margin: 1.25rem auto 2.5rem;
+            padding: 0 1.25rem;
+            flex: 1;
+        }
+
+        .top-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.15rem;
+            flex-wrap: wrap;
+        }
+
+        .main-tab {
+            padding: 0.55rem 1rem;
+            border-radius: 0.65rem;
+            border: 1px solid var(--border-light);
+            background: var(--surface-light);
+            color: var(--muted-light);
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .main-tab.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .edu-card {
+            background: var(--surface-light);
+            border: 1px solid var(--border-light);
+            border-radius: 0.9rem;
+            padding: 1.25rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .edu-card h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+            color: var(--text-light);
+        }
+
+        .edu-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0.85rem 0 0.35rem;
+            color: var(--primary);
+        }
+
+        /* Matières Layout */
+        .subjects-layout {
+            display: grid;
+            grid-template-columns: 230px 1fr;
+            gap: 1.15rem;
+            align-items: start;
+        }
+
+        @media (max-width: 820px) {
+            .subjects-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .subject-list {
+            background: var(--surface-light);
+            border: 1px solid var(--border-light);
+            border-radius: 0.9rem;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .subject-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.52rem 0.75rem;
+            border-radius: 0.6rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-size: 0.86rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .subject-btn:hover {
+            background: var(--surface-subtle);
+        }
+
+        .subject-btn.active {
+            background: #eef2ff;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .notion-list {
+            padding-left: 1.15rem;
+            margin: 0.35rem 0 0.75rem;
+            color: #334155;
+            font-size: 0.9rem;
+        }
+
+        .notion-list li {
+            margin-bottom: 0.3rem;
+        }
+
+        .exo-box {
+            background: var(--surface-subtle);
+            border: 1px solid var(--border-light);
+            border-radius: 0.7rem;
+            padding: 0.85rem 1rem;
+            margin-top: 0.6rem;
+        }
+
+        .corrige-box {
+            margin-top: 0.6rem;
+            padding: 0.7rem 0.85rem;
+            border-radius: 0.6rem;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            font-size: 0.86rem;
+        }
+
+        /* Méthode & Quiz */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .method-item {
+            border: 1px solid var(--border-light);
+            border-radius: 0.75rem;
+            padding: 0.9rem;
+            background: var(--surface-subtle);
+        }
+
+        .quiz-opt {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.6rem 0.85rem;
+            margin-bottom: 0.45rem;
+            border-radius: 0.6rem;
+            border: 1px solid var(--border-light);
+            background: var(--surface-subtle);
+            color: var(--text-light);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .quiz-opt:hover {
+            border-color: var(--primary);
+        }
+
+        .quiz-opt.correct {
+            background: #dcfce7;
+            border-color: #16a34a;
+            color: #14532d;
+        }
+
+        .quiz-opt.wrong {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #7f1d1d;
+        }
+
+        /* Outils */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.1rem;
+        }
+
+        .calc-display {
+            width: 100%;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid #1e293b;
+            border-radius: 0.65rem;
+            padding: 0.65rem 0.8rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 1.15rem;
+            text-align: right;
+            margin-bottom: 0.55rem;
+        }
+
+        .calc-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.4rem;
+        }
+
+        .calc-key {
+            padding: 0.55rem;
+            border-radius: 0.55rem;
+            border: 1px solid var(--border-light);
+            background: var(--surface-subtle);
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .calc-key:hover {
+            background: #e2e8f0;
+        }
+
+        .calc-key.op {
+            background: #eef2ff;
+            color: var(--primary);
+        }
+
+        .calc-key.eq {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .todo-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0.5rem 0.25rem;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.88rem;
+        }
+
+        .todo-row.done span {
+            text-decoration: line-through;
+            color: var(--muted-light);
+        }
+
+        /* ============================================================================
+           2. PORTAIL DE JEUX & CODE EXECUTOR + IA (THÈME SOMBRE)
+           ============================================================================ */
+        #portal-view {
+            min-height: 100vh;
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .portal-header {
+            background: var(--surface-dark);
+            border-bottom: 1px solid var(--border-dark);
+            padding: 0.75rem 1.25rem;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .portal-header-inner {
+            max-width: 1320px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .portal-brand-title {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            letter-spacing: 0.02em;
+        }
+
+        .portal-brand-sub {
+            font-size: 0.72rem;
+            color: var(--muted-dark);
+            font-weight: 600;
+        }
+
+        .btn-dark {
+            background: var(--surface-dark-2);
+            color: var(--text-dark);
+            border: 1px solid var(--border-dark);
+            padding: 0.48rem 0.85rem;
+            border-radius: 0.65rem;
+            font-size: 0.83rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-dark:hover {
+            border-color: var(--neon-cyan);
+        }
+
+        .btn-dark.active {
+            background: #1e293b;
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .btn-escape {
+            background: var(--danger);
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 0.9rem;
+            border-radius: 0.65rem;
+            font-size: 0.83rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-escape:hover {
+            background: #b91c1c;
+        }
+
+        .portal-main {
+            max-width: 1320px;
+            width: 100%;
+            margin: 1.25rem auto 2.5rem;
+            padding: 0 1.25rem;
+            flex: 1;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .game-tile {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 0.85rem;
+            padding: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.65rem;
+            transition: border-color 0.15s, transform 0.15s;
+        }
+
+        .game-tile:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-2px);
+        }
+
+        .game-tile-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .game-tile-title {
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .game-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            background: rgba(34, 211, 238, 0.14);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+
+        .game-tile-desc {
+            font-size: 0.8rem;
+            color: var(--muted-dark);
+        }
+
+        .game-tile-foot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        /* Zone de Jeu Canvas */
+        .stage-box {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 0.9rem;
+            padding: 1rem;
+        }
+
+        .stage-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .score-readout {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            background: var(--bg-dark);
+            border: 1px solid var(--border-dark);
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.6rem;
+        }
+
+        .canvas-frame {
+            width: 100%;
+            max-width: 780px;
+            margin: 0 auto;
+            aspect-ratio: 780 / 480;
+            background: #050811;
+            border: 1px solid var(--border-dark);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        canvas#game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none;
+        }
+
+        .controls-note {
+            margin-top: 0.7rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--muted-dark);
+        }
+
+        /* Code Executor & IA */
+        .exec-panel {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 0.9rem;
+            padding: 1rem;
+        }
+
+        .ai-bar {
+            background: var(--surface-dark-2);
+            border: 1px solid var(--border-dark);
+            border-radius: 0.75rem;
+            padding: 0.8rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .ai-controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.55rem;
+        }
+
+        .dark-input, .dark-select {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 0.6rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .dark-input {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .dark-input:focus, .dark-select:focus {
+            border-color: var(--neon-cyan);
+        }
+
+        .ideas-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.55rem;
+        }
+
+        .idea-chip {
+            background: var(--bg-dark);
+            color: #cbd5e1;
+            border: 1px solid var(--border-dark);
+            border-radius: 999px;
+            padding: 0.25rem 0.65rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .idea-chip:hover {
+            border-color: var(--neon-cyan);
+            color: #ffffff;
+        }
+
+        .exec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-top: 0.75rem;
+        }
+
+        @media (max-width: 880px) {
+            .exec-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .code-textarea {
+            width: 100%;
+            height: 360px;
+            background: #060913;
+            color: #e2e8f0;
+            border: 1px solid var(--border-dark);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            resize: vertical;
+            outline: none;
+            tab-size: 4;
+        }
+
+        .code-textarea:focus {
+            border-color: var(--neon-cyan);
+        }
+
+        .out-col {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            height: 360px;
+        }
+
+        .preview-box {
+            flex: 1.3;
+            background: #050811;
+            border: 1px solid var(--border-dark);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #exec-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #exec-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
+
+        #exec-sql-box {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            padding: 0.65rem;
+            font-size: 0.8rem;
+        }
+
+        .console-box {
+            flex: 0.85;
+            background: #060913;
+            border: 1px solid var(--border-dark);
+            border-radius: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.78rem;
+            color: #6ee7b7;
+            overflow-y: auto;
+        }
+
+        .console-err {
+            color: #fca5a5;
+        }
+
+        .console-info {
+            color: #7dd3fc;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================================================
+         1. FAÇADE SCOLAIRE (VUE PAR DÉFAUT)
+         ======================================================================== -->
+    <div id="edu-view">
+        <header class="edu-header">
+            <div class="edu-header-inner">
+                <button type="button" class="brand-btn" id="edu-brand-btn" title="EduNotes">
+                    <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="2" y="2" width="32" height="32" rx="8" fill="#4338CA"/>
+                        <path d="M10 12.5C12.8 11.5 15.6 11.8 18 13.2C20.4 11.8 23.2 11.5 26 12.5V24.5C23.2 23.5 20.4 23.8 18 25.2C15.6 23.8 12.8 23.5 10 24.5V12.5Z" fill="#FFFFFF"/>
+                        <line x1="18" y1="13.2" x2="18" y2="25.2" stroke="#4338CA" stroke-width="1.6"/>
+                    </svg>
+                    <span>
+                        <span class="brand-name">EduNotes</span>
+                        <span class="brand-tag">Fiches &amp; Exercices</span>
+                    </span>
+                </button>
+
+                <div class="search-wrap">
+                    <input type="text" class="search-input" id="edu-search" placeholder="Rechercher une matière ou notion...">
+                </div>
+
+                <div class="header-controls">
+                    <div class="pomo-pill">
+                        <span id="pomo-time">25:00</span>
+                        <button type="button" class="btn-secondary" id="pomo-start-btn" style="padding:0.2rem 0.5rem;">Start</button>
+                        <button type="button" class="btn-secondary" id="pomo-reset-btn" style="padding:0.2rem 0.5rem;">Reset</button>
+                    </div>
+                    <button type="button" class="btn-primary" id="quick-calc-btn">Calculatrice</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="edu-main">
+            <div class="top-tabs">
+                <button type="button" class="main-tab active" data-tab="subjects">Matières (12)</button>
+                <button type="button" class="main-tab" data-tab="method">Méthode &amp; Quiz</button>
+                <button type="button" class="main-tab" data-tab="tools">Outils</button>
+            </div>
+
+            <!-- Onglet 1 : 12 Matières -->
+            <section id="tab-subjects">
+                <div class="subjects-layout">
+                    <aside class="subject-list" id="subject-list"></aside>
+                    <div class="edu-card" id="subject-detail"></div>
+                </div>
+            </section>
+
+            <!-- Onglet 2 : Méthode & Quiz -->
+            <section id="tab-method" class="hidden">
+                <div class="edu-card">
+                    <h2>Fiches de méthode essentielles</h2>
+                    <div class="method-grid">
+                        <div class="method-item">
+                            <h3>Dissertation</h3>
+                            <p style="font-size:0.86rem;color:#334155;">1. Accroche, définition des termes et problématique.<br>2. Deux ou trois parties argumentées avec exemples précis.<br>3. Bilan synthétique et ouverture justifiée.</p>
+                        </div>
+                        <div class="method-item">
+                            <h3>Commentaire de texte</h3>
+                            <p style="font-size:0.86rem;color:#334155;">1. Contextualisation et lecture analytique.<br>2. Plan en axes (2 ou 3 idées directrices).<br>3. Citation courte + procédé + interprétation à chaque étape.</p>
+                        </div>
+                        <div class="method-item">
+                            <h3>Résolution de problème</h3>
+                            <p style="font-size:0.86rem;color:#334155;">1. Identifier les données et la grandeur recherchée.<br>2. Choisir la loi ou formule adaptée et vérifier les unités.<br>3. Calculer puis rédiger une phrase de conclusion cohérente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+                        <h2 style="margin:0;">Quiz interactif</h2>
+                        <strong id="quiz-score" style="color:var(--primary);font-size:0.9rem;">Score : 0</strong>
+                    </div>
+                    <p id="quiz-question" style="font-weight:700;margin-bottom:0.65rem;"></p>
+                    <div id="quiz-options"></div>
+                    <div id="quiz-explanation" class="corrige-box hidden"></div>
+                    <button type="button" class="btn-primary" id="quiz-next" style="margin-top:0.75rem;">Question suivante</button>
+                </div>
+            </section>
+
+            <!-- Onglet 3 : Outils -->
+            <section id="tab-tools" class="hidden">
+                <div class="tools-grid">
+                    <!-- Calculatrice scientifique simple -->
+                    <div class="edu-card" id="calc-card">
+                        <h2>Calculatrice scientifique</h2>
+                        <input type="text" class="calc-display" id="calc-screen" value="0" readonly aria-label="Écran calculatrice">
+                        <div class="calc-keys" id="calc-keys"></div>
+                    </div>
+
+                    <!-- Convertisseur d'unités -->
+                    <div class="edu-card">
+                        <h2>Convertisseur d'unités</h2>
+                        <div style="display:flex;gap:0.5rem;margin-bottom:0.65rem;flex-wrap:wrap;">
+                            <select id="unit-mode" class="search-input" style="max-width:210px;">
+                                <option value="kmh">km/h vers m/s</option>
+                                <option value="temp">Celsius (°C) vers Kelvin (K)</option>
+                                <option value="len">Kilomètres (km) vers Mètres (m)</option>
+                                <option value="bin">Décimal vers Binaire</option>
+                            </select>
+                            <input type="number" id="unit-val" class="search-input" style="max-width:130px;" value="100">
+                        </div>
+                        <div id="unit-result" style="padding:0.65rem 0.8rem;border-radius:0.6rem;background:var(--surface-subtle);border:1px solid var(--border-light);font-weight:700;font-size:0.9rem;"></div>
+                    </div>
+
+                    <!-- Liste de révision localStorage -->
+                    <div class="edu-card">
+                        <h2>Liste de révision</h2>
+                        <div style="display:flex;gap:0.45rem;margin-bottom:0.65rem;">
+                            <input type="text" id="todo-input" class="search-input" placeholder="Nouvelle tâche de révision...">
+                            <button type="button" class="btn-primary" id="todo-add">Ajouter</button>
+                        </div>
+                        <div id="todo-items"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ========================================================================
+         2. PORTAIL DE JEUX & CODE EXECUTOR + IA (THÈME SOMBRE)
+         ======================================================================== -->
+    <div id="portal-view" class="hidden">
+        <header class="portal-header">
+            <div class="portal-header-inner">
+                <button type="button" class="brand-btn" id="portal-home-brand">
+                    <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <polygon points="18,2 33,10 33,26 18,34 3,26 3,10" fill="#111827" stroke="#22D3EE" stroke-width="2"/>
+                        <rect x="11" y="15" width="14" height="6" rx="2" fill="#818CF8"/>
+                    </svg>
+                    <span>
+                        <span class="portal-brand-title">Arcade &amp; Lab</span>
+                        <span class="portal-brand-sub">Échap pour revenir aux cours</span>
+                    </span>
+                </button>
+
+                <div style="display:flex;gap:0.45rem;flex-wrap:wrap;">
+                    <button type="button" class="btn-dark active" id="nav-games-btn">Jeux (12)</button>
+                    <button type="button" class="btn-dark" id="nav-exec-btn">Code Executor &amp; IA</button>
+                    <button type="button" class="btn-dark" id="sound-toggle-btn">Son : ON</button>
+                    <button type="button" class="btn-escape" id="escape-btn">Cours [Échap]</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="portal-main">
+            <!-- Catalogue 12 Jeux -->
+            <section id="portal-games-section">
+                <div class="games-grid" id="games-grid"></div>
+            </section>
+
+            <!-- Lecteur Canvas de Jeu -->
+            <section id="portal-stage-section" class="hidden">
+                <div class="stage-box">
+                    <div class="stage-bar">
+                        <h2 id="stage-title" style="font-size:1.08rem;font-weight:800;">Jeu</h2>
+                        <div class="score-readout">
+                            Score : <span id="stage-score">0</span> | Record : <span id="stage-best">0</span>
+                        </div>
+                        <div style="display:flex;gap:0.45rem;">
+                            <button type="button" class="btn-dark" id="stage-restart">Rejouer</button>
+                            <button type="button" class="btn-dark" id="stage-back">Catalogue</button>
+                        </div>
+                    </div>
+                    <div class="canvas-frame">
+                        <canvas id="game-canvas" width="780" height="480"></canvas>
+                    </div>
+                    <div class="controls-note" id="stage-controls"></div>
+                </div>
+            </section>
+
+            <!-- Code Executor + Module IA -->
+            <section id="portal-exec-section" class="hidden">
+                <div class="exec-panel">
+                    <div class="ai-bar">
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                            <strong style="font-size:0.92rem;color:#ffffff;">Assistant IA de génération de code</strong>
+                            <span id="ai-feedback" style="font-size:0.78rem;color:var(--neon-cyan);font-weight:600;">Prêt</span>
+                        </div>
+                        <div class="ai-controls-row">
+                            <select id="ai-model" class="dark-select" aria-label="Modèle IA">
+                                <option value="flash">Modèle : Flash</option>
+                                <option value="architect">Modèle : Architecte</option>
+                                <option value="game2d">Modèle : Jeu 2D</option>
+                                <option value="webui">Modèle : Web UI</option>
+                                <option value="luau">Modèle : Luau</option>
+                            </select>
+                            <input type="text" id="ai-prompt" class="dark-input" placeholder="Décris le code à générer (ex. : jeu d'esquive, compteur web, spirale python)...">
+                            <button type="button" class="btn-primary" id="ai-gen-btn">Générer &amp; Lancer</button>
+                        </div>
+                        <div class="ideas-row" id="ai-ideas">
+                            <button type="button" class="idea-chip" data-lang="js" data-prompt="Jeu d'esquive avec cible à collecter">Jeu d'esquive JS</button>
+                            <button type="button" class="idea-chip" data-lang="html" data-prompt="Carte interactive avec compteur">Mini App HTML/JS</button>
+                            <button type="button" class="idea-chip" data-lang="python" data-prompt="Table de multiplication et motif carré">Script Python</button>
+                            <button type="button" class="idea-chip" data-lang="luau" data-prompt="Plateforme et spawn Roblox Luau">Bloc Luau</button>
+                            <button type="button" class="idea-chip" data-lang="sql" data-prompt="Requête élèves triés par note">Requête SQL</button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.5rem;">
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <select id="exec-lang" class="dark-select" aria-label="Langage">
+                                <option value="js">JavaScript (Canvas 2D)</option>
+                                <option value="html">HTML / CSS / JS</option>
+                                <option value="python">Python (Console / Grille)</option>
+                                <option value="luau">Luau / Roblox (Simulateur)</option>
+                                <option value="sql">SQL (Table démo)</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;gap:0.45rem;">
+                            <button type="button" class="btn-primary" id="exec-run">Exécuter</button>
+                            <button type="button" class="btn-dark" id="exec-stop">Stop</button>
+                            <button type="button" class="btn-dark" id="exec-clear">Effacer console</button>
+                        </div>
+                    </div>
+
+                    <div class="exec-grid">
+                        <textarea id="exec-code" class="code-textarea" spellcheck="false"></textarea>
+                        <div class="out-col">
+                            <div class="preview-box">
+                                <canvas id="exec-canvas" width="560" height="220"></canvas>
+                                <iframe id="exec-iframe" class="hidden" sandbox="allow-scripts"></iframe>
+                                <div id="exec-sql-box" class="hidden"></div>
+                            </div>
+                            <div class="console-box" id="exec-console">Console prête.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            /* ========================================================================
+               AUDIO LÉGER (WEB AUDIO API)
+               ======================================================================== */
+            const Sound = {
+                ctx: null,
+                enabled: true,
+                beep(freq, dur, type) {
+                    if (!this.enabled || !App.portalOpen) return;
+                    try {
+                        if (!this.ctx) {
+                            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                            if (AudioCtx) this.ctx = new AudioCtx();
+                        }
+                        if (!this.ctx) return;
+                        if (this.ctx.state === 'suspended') this.ctx.resume().catch(function () {});
+                        const now = this.ctx.currentTime;
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = type || 'sine';
+                        osc.frequency.setValueAtTime(freq, now);
+                        gain.gain.setValueAtTime(0.06, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + dur);
+                    } catch (_) {}
+                },
+                stopAudio() {
+                    try {
+                        if (this.ctx && this.ctx.state === 'running') {
+                            this.ctx.suspend().catch(function () {});
+                        }
+                    } catch (_) {}
+                }
+            };
+
+            /* ========================================================================
+               DONNÉES SCOLAIRES : 12 MATIÈRES
+               ======================================================================== */
+            const SUBJECTS = [
+                {
+                    id: 'maths',
+                    name: 'Mathématiques',
+                    chapter: 'Fonctions dérivées & suites',
+                    notions: [
+                        'La dérivée f\'(x) indique la pente de la tangente et le sens de variation de f.',
+                        'Pour une suite arithmétique : uₙ = u₀ + n·r ; géométrique : uₙ = u₀·qⁿ.',
+                        'Le signe de f\'(x) donne les variations : f\'(x) > 0 implique f croissante.'
+                    ],
+                    exo: 'Soit f(x) = 2x³ - 3x + 1. Calcule f\'(x).',
+                    corrige: 'f\'(x) = 2·(3x²) - 3·1 + 0 = 6x² - 3.'
+                },
+                {
+                    id: 'physique',
+                    name: 'Physique-Chimie',
+                    chapter: 'Énergie mécanique & ondes',
+                    notions: [
+                        'Énergie cinétique : Ec = ½·m·v² (m en kg, v en m/s, Ec en Joules).',
+                        'Longueur d\'onde : λ = c / f ou λ = v · T.',
+                        'Loi d\'Ohm : U = R · I.'
+                    ],
+                    exo: 'Calcule l\'énergie cinétique d\'un objet de masse 2 kg allant à 5 m/s.',
+                    corrige: 'Ec = 0,5 × 2 × 5² = 25 J.'
+                },
+                {
+                    id: 'svt',
+                    name: 'SVT',
+                    chapter: 'Génétique & métabolisme cellulaire',
+                    notions: [
+                        'L\'ADN est une double hélice formée de nucléotides complémentaires (A-T et C-G).',
+                        'La respiration cellulaire produit de l\'ATP à partir du glucose et du dioxygène.',
+                        'Les mutations créent de nouveaux allèles à l\'origine de la biodiversité.'
+                    ],
+                    exo: 'Si un brin d\'ADN commence par A-T-G-C, quel est le brin complémentaire ?',
+                    corrige: 'Le brin complémentaire est T-A-C-G.'
+                },
+                {
+                    id: 'histoire',
+                    name: 'Histoire',
+                    chapter: 'Relations internationales depuis 1945',
+                    notions: [
+                        'La guerre froide (1947-1991) oppose le bloc occidental et le bloc soviétique.',
+                        'La construction européenne débute avec la CECA (1951) et le traité de Rome (1957).',
+                        'La chute du mur de Berlin (1989) marque la fin de la division de l\'Europe.'
+                    ],
+                    exo: 'Cite deux événements majeurs de la guerre froide.',
+                    corrige: 'La crise de Berlin (1948-1949) et la crise de Cuba (1962).'
+                },
+                {
+                    id: 'geo',
+                    name: 'Géographie',
+                    chapter: 'Mondialisation, territoires & mobilités',
+                    notions: [
+                        'Les métropoles concentrent les fonctions de commandement et les réseaux.',
+                        'Les espaces productifs s\'adaptent à la concurrence mondiale et aux transitions.',
+                        'Les flux de marchandises empruntent surtout les routes maritimes et les hubs.'
+                    ],
+                    exo: 'Pourquoi les littoraux sont-ils des espaces très attractifs dans la mondialisation ?',
+                    corrige: 'Ils facilitent les échanges maritimes, les industries portuaires et le tourisme.'
+                },
+                {
+                    id: 'francais',
+                    name: 'Français',
+                    chapter: 'Analyse littéraire & figures de style',
+                    notions: [
+                        'Métaphore : image sans outil de comparaison ; comparaison avec outil (comme, tel).',
+                        'Anaphore : répétition d\'un mot ou groupe en début de phrase ou de vers.',
+                        'Oxymore : alliance de deux mots de sens contraires pour créer un contraste.'
+                    ],
+                    exo: 'Identifie le procédé dans : « Cette obscure clarté qui tombe des étoiles ».',
+                    corrige: 'C\'est un oxymore (« obscure » et « clarté » s\'opposent).'
+                },
+                {
+                    id: 'anglais',
+                    name: 'Anglais',
+                    chapter: 'Temps verbaux & connecteurs',
+                    notions: [
+                        'Present perfect (have/has + V-ed) : lien passé-présent, bilan ou expérience.',
+                        'Since introduit un point de départ précis ; for introduit une durée.',
+                        'Connecteurs : however (cependant), moreover (de plus), whereas (tandis que).'
+                    ],
+                    exo: 'Choisis entre for et since : « She has studied English ___ five years. »',
+                    corrige: 'Il faut utiliser « for » car five years est une durée.'
+                },
+                {
+                    id: 'allemand',
+                    name: 'Allemand',
+                    chapter: 'Syntaxe, cas & verbes de modalité',
+                    notions: [
+                        'Le verbe conjugué est en deuxième position dans une proposition déclarative simple.',
+                        'Les verbes de modalité (können, müssen, wollen) placent l\'infinitif en fin de phrase.',
+                        'Les articles changent selon le cas (Nominatif, Accusatif, Datif, Génitif).'
+                    ],
+                    exo: 'Traduis : « Je dois apprendre aujourd\'hui. »',
+                    corrige: '« Ich muss heute lernen. »'
+                },
+                {
+                    id: 'nsi',
+                    name: 'NSI',
+                    chapter: 'Algorithmique, structures & bases',
+                    notions: [
+                        'La recherche dichotomique divise l\'intervalle par deux à chaque étape : O(log n).',
+                        'Un octet vaut 8 bits, soit 256 valeurs possibles de 0 à 255.',
+                        'Les piles (LIFO) et files (FIFO) organisent l\'accès aux données.'
+                    ],
+                    exo: 'Quelle est la valeur décimale du nombre binaire 1010 ?',
+                    corrige: '1×8 + 0×4 + 1×2 + 0×1 = 10.'
+                },
+                {
+                    id: 'ses',
+                    name: 'SES',
+                    chapter: 'Marchés, croissance & sociologie',
+                    notions: [
+                        'La loi de l\'offre et de la demande détermine le prix d\'équilibre sur un marché.',
+                        'Le PIB mesure la richesse créée sur un territoire pendant une période donnée.',
+                        'La socialisation transmet les normes et valeurs tout au long de la vie.'
+                    ],
+                    exo: 'Qu\'est-ce qu\'une externalité négative ? Donne un exemple.',
+                    corrige: 'C\'est l\'effet d\'une activité économique sur un tiers sans compensation (ex. : pollution).'
+                },
+                {
+                    id: 'philo',
+                    name: 'Philosophie',
+                    chapter: 'Conscience, liberté, vérité & justice',
+                    notions: [
+                        'La conscience réflexive permet le retour sur soi et le doute méthodique.',
+                        'La liberté ne se réduit pas à l\'absence de contrainte : elle engage la responsabilité.',
+                        'La vérité peut se définir comme accord avec le réel ou cohérence rationnelle.'
+                    ],
+                    exo: 'Quelle distinction faire entre désir et besoin ?',
+                    corrige: 'Le besoin est vital et limité ; le désir est souvent lié à l\'imagination et sans limite fixe.'
+                },
+                {
+                    id: 'emc',
+                    name: 'EMC',
+                    chapter: 'Démocratie, droits & citoyenneté',
+                    notions: [
+                        'La séparation des pouvoirs (législatif, exécutif, judiciaire) protège l\'État de droit.',
+                        'La liberté d\'expression s\'accompagne de limites légales (respect d\'autrui, ordre public).',
+                        'L\'engagement citoyen repose sur le vote, l\'information vérifiée et l\'intérêt général.'
+                    ],
+                    exo: 'Quel est le rôle principal du juge constitutionnel ?',
+                    corrige: 'Vérifier la conformité des lois à la Constitution et garantir les droits fondamentaux.'
+                }
+            ];
+
+            const QUIZ_QUESTIONS = [
+                {
+                    q: 'En mathématiques, quelle est la dérivée de x² ?',
+                    opts: ['2x', 'x', 'x³', '2'],
+                    ans: 0,
+                    exp: 'La dérivée de xⁿ est n·xⁿ⁻¹, donc pour n = 2 on obtient 2x.'
+                },
+                {
+                    q: 'En NSI, combien de valeurs distinctes peut coder 1 octet (8 bits) ?',
+                    opts: ['64', '128', '256', '512'],
+                    ans: 2,
+                    exp: '2⁸ = 256 valeurs possibles (de 0 à 255).'
+                },
+                {
+                    q: 'En histoire, quelle année correspond à la chute du mur de Berlin ?',
+                    opts: ['1975', '1989', '1995', '2001'],
+                    ans: 1,
+                    exp: 'Le mur de Berlin est tombé en novembre 1989.'
+                },
+                {
+                    q: 'Quelle figure de style rapproche deux mots de sens opposé ?',
+                    opts: ['Une métaphore', 'Un oxymore', 'Une énumération', 'Une gradation'],
+                    ans: 1,
+                    exp: 'L\'oxymore unit deux termes contradictoires.'
+                }
+            ];
+
+            /* ========================================================================
+               APPLICATION PRINCIPALE (FAÇADE SCOLAIRE & BASCULE ÉCHAP)
+               ======================================================================== */
+            const App = {
+                portalOpen: false,
+                logoClicks: [],
+                activeSubjectId: SUBJECTS[0].id,
+                quizIndex: 0,
+                quizScore: 0,
+                quizLocked: false,
+                pomoSeconds: 1500,
+                pomoInterval: null,
+                calcExpr: '',
+                todos: [],
+
+                init() {
+                    this.bindStealth();
+                    this.bindTopTabs();
+                    this.renderSubjectsList();
+                    this.renderSubjectDetail(this.activeSubjectId);
+                    this.renderQuiz();
+                    this.initPomodoro();
+                    this.initCalculator();
+                    this.initConverter();
+                    this.initTodos();
+                    Portal.init();
+                },
+
+                openPortal() {
+                    if (this.portalOpen) return;
+                    this.portalOpen = true;
+                    document.getElementById('edu-view').classList.add('hidden');
+                    document.getElementById('portal-view').classList.remove('hidden');
+                    document.title = 'Arcade & Lab';
+                    Portal.showGames();
+                },
+
+                closePortal() {
+                    this.portalOpen = false;
+                    GameEngine.stop();
+                    Executor.stop();
+                    Sound.stopAudio();
+                    document.getElementById('portal-view').classList.add('hidden');
+                    document.getElementById('edu-view').classList.remove('hidden');
+                    document.title = 'EduNotes — Fiches de Révision & Exercices';
+                },
+
+                bindStealth() {
+                    const self = this;
+                    document.getElementById('edu-brand-btn').addEventListener('click', function () {
+                        const now = Date.now();
+                        self.logoClicks = self.logoClicks.filter(function (t) { return now - t < 1500; });
+                        self.logoClicks.push(now);
+                        if (self.logoClicks.length >= 3) {
+                            self.logoClicks = [];
+                            self.openPortal();
+                        }
+                    });
+
+                    document.getElementById('edu-search').addEventListener('input', function (e) {
+                        const val = e.target.value.trim().toLowerCase();
+                        if (val === 'play' || val === 'jeux' || val === '1337') {
+                            e.target.value = '';
+                            self.openPortal();
+                            return;
+                        }
+                        self.filterSubjects(val);
+                    });
+
+                    window.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape' && self.portalOpen) {
+                            e.preventDefault();
+                            self.closePortal();
+                        } else if (e.ctrlKey && e.shiftKey && (e.key === 'G' || e.key === 'g')) {
+                            e.preventDefault();
+                            self.openPortal();
+                        }
+                    });
+
+                    document.getElementById('escape-btn').addEventListener('click', function () {
+                        self.closePortal();
+                    });
+                },
+
+                bindTopTabs() {
+                    const self = this;
+                    const tabs = document.querySelectorAll('.main-tab');
+                    tabs.forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            const target = btn.dataset.tab;
+                            tabs.forEach(function (t) { t.classList.toggle('active', t === btn); });
+                            document.getElementById('tab-subjects').classList.toggle('hidden', target !== 'subjects');
+                            document.getElementById('tab-method').classList.toggle('hidden', target !== 'method');
+                            document.getElementById('tab-tools').classList.toggle('hidden', target !== 'tools');
+                        });
+                    });
+
+                    document.getElementById('quick-calc-btn').addEventListener('click', function () {
+                        const toolsTab = document.querySelector('.main-tab[data-tab="tools"]');
+                        if (toolsTab) toolsTab.click();
+                        const card = document.getElementById('calc-card');
+                        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+                },
+
+                renderSubjectsList(filterText) {
+                    const query = (filterText || '').toLowerCase();
+                    const listEl = document.getElementById('subject-list');
+                    const items = SUBJECTS.filter(function (s) {
+                        if (!query) return true;
+                        return s.name.toLowerCase().includes(query) ||
+                            s.chapter.toLowerCase().includes(query) ||
+                            s.notions.some(function (n) { return n.toLowerCase().includes(query); });
+                    });
+
+                    if (!items.length) {
+                        listEl.innerHTML = '<div style="padding:0.7rem;font-size:0.84rem;color:#64748b;">Aucune matière trouvée.</div>';
+                        return;
+                    }
+
+                    if (!items.some(function (s) { return s.id === this.activeSubjectId; }, this)) {
+                        this.activeSubjectId = items[0].id;
+                    }
+
+                    const self = this;
+                    listEl.innerHTML = items.map(function (s) {
+                        const cls = s.id === self.activeSubjectId ? 'subject-btn active' : 'subject-btn';
+                        return '<button type="button" class="' + cls + '" data-id="' + s.id + '">' + s.name + '</button>';
+                    }).join('');
+
+                    listEl.querySelectorAll('.subject-btn').forEach(function (b) {
+                        b.addEventListener('click', function () {
+                            self.activeSubjectId = b.dataset.id;
+                            self.renderSubjectsList(document.getElementById('edu-search').value.trim());
+                            self.renderSubjectDetail(self.activeSubjectId);
+                        });
+                    });
+                },
+
+                filterSubjects(query) {
+                    const subjectsTab = document.querySelector('.main-tab[data-tab="subjects"]');
+                    if (subjectsTab && !subjectsTab.classList.contains('active')) {
+                        subjectsTab.click();
+                    }
+                    this.renderSubjectsList(query);
+                    this.renderSubjectDetail(this.activeSubjectId);
+                },
+
+                renderSubjectDetail(id) {
+                    const s = SUBJECTS.find(function (item) { return item.id === id; }) || SUBJECTS[0];
+                    const box = document.getElementById('subject-detail');
+                    box.innerHTML =
+                        '<h2>' + s.name + ' — ' + s.chapter + '</h2>' +
+                        '<h3>Notions clés</h3>' +
+                        '<ul class="notion-list">' +
+                        s.notions.map(function (n) { return '<li>' + n + '</li>'; }).join('') +
+                        '</ul>' +
+                        '<div class="exo-box">' +
+                        '<strong>Mini-exercice :</strong> ' + s.exo +
+                        '<div style="margin-top:0.55rem;"><button type="button" class="btn-secondary" id="toggle-corrige-btn">Afficher / masquer le corrigé</button></div>' +
+                        '<div class="corrige-box hidden" id="corrige-content"><strong>Corrigé :</strong> ' + s.corrige + '</div>' +
+                        '</div>';
+
+                    document.getElementById('toggle-corrige-btn').addEventListener('click', function () {
+                        document.getElementById('corrige-content').classList.toggle('hidden');
+                    });
+                },
+
+                renderQuiz() {
+                    const q = QUIZ_QUESTIONS[this.quizIndex % QUIZ_QUESTIONS.length];
+                    this.quizLocked = false;
+                    document.getElementById('quiz-score').textContent = 'Score : ' + this.quizScore;
+                    document.getElementById('quiz-question').textContent = q.q;
+                    const expBox = document.getElementById('quiz-explanation');
+                    expBox.classList.add('hidden');
+                    expBox.textContent = q.exp;
+
+                    const optsBox = document.getElementById('quiz-options');
+                    const self = this;
+                    optsBox.innerHTML = q.opts.map(function (opt, idx) {
+                        return '<button type="button" class="quiz-opt" data-idx="' + idx + '">' + opt + '</button>';
+                    }).join('');
+
+                    optsBox.querySelectorAll('.quiz-opt').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            if (self.quizLocked) return;
+                            self.quizLocked = true;
+                            const chosen = Number(btn.dataset.idx);
+                            if (chosen === q.ans) {
+                                btn.classList.add('correct');
+                                self.quizScore += 1;
+                                document.getElementById('quiz-score').textContent = 'Score : ' + self.quizScore;
+                            } else {
+                                btn.classList.add('wrong');
+                                optsBox.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+                            }
+                            expBox.classList.remove('hidden');
+                        });
+                    });
+
+                    document.getElementById('quiz-next').onclick = function () {
+                        self.quizIndex += 1;
+                        self.renderQuiz();
+                    };
+                },
+
+                initPomodoro() {
+                    const self = this;
+                    const disp = document.getElementById('pomo-time');
+                    const drawTime = function () {
+                        const m = String(Math.floor(self.pomoSeconds / 60)).padStart(2, '0');
+                        const s = String(self.pomoSeconds % 60).padStart(2, '0');
+                        disp.textContent = m + ':' + s;
+                    };
+                    drawTime();
+
+                    document.getElementById('pomo-start-btn').addEventListener('click', function () {
+                        if (self.pomoInterval) {
+                            clearInterval(self.pomoInterval);
+                            self.pomoInterval = null;
+                            this.textContent = 'Start';
+                        } else {
+                            this.textContent = 'Pause';
+                            self.pomoInterval = setInterval(function () {
+                                if (self.pomoSeconds > 0) {
+                                    self.pomoSeconds -= 1;
+                                    drawTime();
+                                } else {
+                                    clearInterval(self.pomoInterval);
+                                    self.pomoInterval = null;
+                                }
+                            }, 1000);
+                        }
+                    });
+
+                    document.getElementById('pomo-reset-btn').addEventListener('click', function () {
+                        clearInterval(self.pomoInterval);
+                        self.pomoInterval = null;
+                        self.pomoSeconds = 1500;
+                        document.getElementById('pomo-start-btn').textContent = 'Start';
+                        drawTime();
+                    });
+                },
+
+                initCalculator() {
+                    const keys = ['7','8','9','/','4','5','6','*','1','2','3','-','C','0','.','+','√','x²','(',')','='];
+                    const grid = document.getElementById('calc-keys');
+                    const screen = document.getElementById('calc-screen');
+                    const self = this;
+
+                    grid.innerHTML = keys.map(function (k) {
+                        const cls = k === '=' ? 'calc-key eq' : (['/','*','-','+','C','√','x²','(',')'].includes(k) ? 'calc-key op' : 'calc-key');
+                        return '<button type="button" class="' + cls + '">' + k + '</button>';
+                    }).join('');
+
+                    grid.querySelectorAll('.calc-key').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            const k = btn.textContent;
+                            if (k === 'C') {
+                                self.calcExpr = '';
+                                screen.value = '0';
+                            } else if (k === '√') {
+                                const n = parseFloat(screen.value) || 0;
+                                const r = n >= 0 ? Math.sqrt(n) : NaN;
+                                self.calcExpr = String(r);
+                                screen.value = self.calcExpr;
+                            } else if (k === 'x²') {
+                                const n = parseFloat(screen.value) || 0;
+                                const r = n * n;
+                                self.calcExpr = String(r);
+                                screen.value = self.calcExpr;
+                            } else if (k === '=') {
+                                try {
+                                    if (!self.calcExpr || !/^[0-9+\-*/().\s]+$/.test(self.calcExpr)) throw new Error('Expression invalide');
+                                    const res = Function('"use strict";return (' + self.calcExpr + ')')();
+                                    self.calcExpr = String(res);
+                                    screen.value = self.calcExpr;
+                                } catch (_) {
+                                    screen.value = 'Erreur';
+                                    self.calcExpr = '';
+                                }
+                            } else {
+                                self.calcExpr += k;
+                                screen.value = self.calcExpr;
+                            }
+                        });
+                    });
+                },
+
+                initConverter() {
+                    const modeEl = document.getElementById('unit-mode');
+                    const valEl = document.getElementById('unit-val');
+                    const outEl = document.getElementById('unit-result');
+
+                    const compute = function () {
+                        const v = parseFloat(valEl.value) || 0;
+                        const m = modeEl.value;
+                        if (m === 'kmh') {
+                            outEl.textContent = (v / 3.6).toFixed(2) + ' m/s';
+                        } else if (m === 'temp') {
+                            outEl.textContent = (v + 273.15).toFixed(2) + ' K';
+                        } else if (m === 'len') {
+                            outEl.textContent = (v * 1000).toLocaleString('fr-FR') + ' m';
+                        } else {
+                            const n = Math.max(0, Math.floor(v));
+                            outEl.textContent = '0b' + n.toString(2);
+                        }
+                    };
+
+                    modeEl.addEventListener('change', compute);
+                    valEl.addEventListener('input', compute);
+                    compute();
+                },
+
+                initTodos() {
+                    const self = this;
+                    try {
+                        self.todos = JSON.parse(localStorage.getItem('edunotes_todos_v2') || 'null') || [];
+                    } catch (_) {
+                        self.todos = [];
+                    }
+                    if (!self.todos.length) {
+                        self.todos = [
+                            { text: 'Relire les dérivées usuelles', done: false },
+                            { text: 'Réviser le vocabulaire d\'anglais', done: true }
+                        ];
+                    }
+
+                    const saveAndRender = function () {
+                        try { localStorage.setItem('edunotes_todos_v2', JSON.stringify(self.todos)); } catch (_) {}
+                        const wrap = document.getElementById('todo-items');
+                        wrap.innerHTML = self.todos.map(function (item, i) {
+                            return '<div class="todo-row ' + (item.done ? 'done' : '') + '">' +
+                                '<label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">' +
+                                '<input type="checkbox" ' + (item.done ? 'checked' : '') + ' data-i="' + i + '">' +
+                                '<span>' + item.text + '</span>' +
+                                '</label>' +
+                                '<button type="button" class="btn-secondary" style="padding:0.15rem 0.45rem;" data-del="' + i + '">x</button>' +
+                                '</div>';
+                        }).join('');
+
+                        wrap.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+                            cb.addEventListener('change', function () {
+                                self.todos[Number(cb.dataset.i)].done = cb.checked;
+                                saveAndRender();
+                            });
+                        });
+
+                        wrap.querySelectorAll('button[data-del]').forEach(function (btn) {
+                            btn.addEventListener('click', function () {
+                                self.todos.splice(Number(btn.dataset.del), 1);
+                                saveAndRender();
+                            });
+                        });
+                    };
+
+                    document.getElementById('todo-add').addEventListener('click', function () {
+                        const inp = document.getElementById('todo-input');
+                        const txt = inp.value.trim();
+                        if (txt) {
+                            self.todos.push({ text: txt, done: false });
+                            inp.value = '';
+                            saveAndRender();
+                        }
+                    });
+
+                    saveAndRender();
+                }
+            };
+
+            /* ========================================================================
+               PORTAIL : 12 JEUX CANVAS
+               ======================================================================== */
+            const GAMES_LIST = [
+                { id: 'snake', title: 'Snake', badge: 'Arcade', desc: 'Collecte les cibles sans toucher ton corps.', controls: 'Flèches ou ZQSD / WASD pour diriger.' },
+                { id: 'tetris', title: 'Tetris', badge: 'Arcade', desc: 'Aligne les lignes complètes pour marquer.', controls: 'Gauche/Droite : déplacer • Haut : pivoter • Bas : accélérer.' },
+                { id: 'g2048', title: '2048', badge: 'Puzzle', desc: 'Fusionne les tuiles identiques jusqu\'à 2048.', controls: 'Flèches ou ZQSD / WASD pour glisser les tuiles.' },
+                { id: 'breakout', title: 'Casse-Briques', badge: 'Arcade', desc: 'Casse toutes les briques avec la balle.', controls: 'Souris ou Gauche/Droite pour déplacer la raquette.' },
+                { id: 'shooter', title: 'Space Shooter', badge: 'Action', desc: 'Élimine les vagues d\'ennemis en tirant.', controls: 'Gauche/Droite ou Souris • Espace pour tirer.' },
+                { id: 'flappy', title: 'Flappy Cyber', badge: 'Reflex', desc: 'Passe entre les obstacles sans toucher.', controls: 'Espace, Haut ou Clic pour monter.' },
+                { id: 'geodash', title: 'Geometry Dash', badge: 'Reflex', desc: 'Saute par-dessus les pointes au bon rythme.', controls: 'Espace, Haut ou Clic pour sauter.' },
+                { id: 'pong', title: 'Pong VS IA', badge: 'Sport', desc: 'Affronte l\'IA dans un duel rapide.', controls: 'Souris ou Haut/Bas pour déplacer ta raquette.' },
+                { id: 'mines', title: 'Démineur', badge: 'Logique', desc: 'Révèle les cases sûres sans cliquer sur les mines.', controls: 'Clic gauche : révéler • Clic droit : drapeau.' },
+                { id: 'cookie', title: 'Cookie Clicker', badge: 'Idle', desc: 'Clique sur le cookie et achète des améliorations.', controls: 'Clic gauche sur le cookie et sur les améliorations à droite.' },
+                { id: 'dino', title: 'Dino Cyber Run', badge: 'Runner', desc: 'Cours le plus loin possible au-dessus des obstacles.', controls: 'Espace, Haut ou Clic pour sauter.' },
+                { id: 'memory', title: 'Memory Matrix', badge: 'Mémoire', desc: 'Retrouve toutes les paires de symboles.', controls: 'Clic gauche sur deux cartes pour les retourner.' }
+            ];
+
+            const Portal = {
+                init() {
+                    const self = this;
+                    document.getElementById('portal-home-brand').addEventListener('click', function () { self.showGames(); });
+                    document.getElementById('nav-games-btn').addEventListener('click', function () { self.showGames(); });
+                    document.getElementById('nav-exec-btn').addEventListener('click', function () { self.showExecutor(); });
+                    document.getElementById('stage-back').addEventListener('click', function () { self.showGames(); });
+                    document.getElementById('stage-restart').addEventListener('click', function () {
+                        if (GameEngine.currentId) GameEngine.start(GameEngine.currentId);
+                    });
+
+                    const soundBtn = document.getElementById('sound-toggle-btn');
+                    soundBtn.addEventListener('click', function () {
+                        Sound.enabled = !Sound.enabled;
+                        soundBtn.textContent = Sound.enabled ? 'Son : ON' : 'Son : OFF';
+                        if (!Sound.enabled) Sound.stopAudio();
+                    });
+
+                    this.renderGrid();
+                },
+
+                renderGrid() {
+                    const grid = document.getElementById('games-grid');
+                    const self = this;
+                    grid.innerHTML = GAMES_LIST.map(function (g) {
+                        let best = 0;
+                        try { best = Number(localStorage.getItem('edunotes_sc_' + g.id) || '0'); } catch (_) {}
+                        return '<div class="game-tile" data-id="' + g.id + '">' +
+                            '<div>' +
+                            '<div class="game-tile-top"><span class="game-tile-title">' + g.title + '</span><span class="game-badge">' + g.badge + '</span></div>' +
+                            '<p class="game-tile-desc" style="margin-top:0.35rem;">' + g.desc + '</p>' +
+                            '</div>' +
+                            '<div class="game-tile-foot"><span>Jouer</span><span>Record : ' + best + '</span></div>' +
+                            '</div>';
+                    }).join('');
+
+                    grid.querySelectorAll('.game-tile').forEach(function (tile) {
+                        tile.addEventListener('click', function () {
+                            self.openGame(tile.dataset.id);
+                        });
+                    });
+                },
+
+                showGames() {
+                    GameEngine.stop();
+                    Executor.stop();
+                    document.getElementById('nav-games-btn').classList.add('active');
+                    document.getElementById('nav-exec-btn').classList.remove('active');
+                    document.getElementById('portal-games-section').classList.remove('hidden');
+                    document.getElementById('portal-stage-section').classList.add('hidden');
+                    document.getElementById('portal-exec-section').classList.add('hidden');
+                    this.renderGrid();
+                },
+
+                openGame(id) {
+                    const g = GAMES_LIST.find(function (item) { return item.id === id; });
+                    if (!g) return;
+                    Executor.stop();
+                    document.getElementById('portal-games-section').classList.add('hidden');
+                    document.getElementById('portal-exec-section').classList.add('hidden');
+                    document.getElementById('portal-stage-section').classList.remove('hidden');
+                    document.getElementById('stage-title').textContent = g.title;
+                    document.getElementById('stage-controls').textContent = g.controls;
+                    GameEngine.start(id);
+                },
+
+                showExecutor() {
+                    GameEngine.stop();
+                    document.getElementById('nav-games-btn').classList.remove('active');
+                    document.getElementById('nav-exec-btn').classList.add('active');
+                    document.getElementById('portal-games-section').classList.add('hidden');
+                    document.getElementById('portal-stage-section').classList.add('hidden');
+                    document.getElementById('portal-exec-section').classList.remove('hidden');
+                    Executor.init();
+                }
+            };
+
+            /* ========================================================================
+               MOTEUR CANVAS DES 12 JEUX
+               ======================================================================== */
+            const GameEngine = {
+                canvas: document.getElementById('game-canvas'),
+                ctx: document.getElementById('game-canvas').getContext('2d'),
+                currentId: null,
+                state: null,
+                rafId: null,
+                keys: {},
+                mouse: { x: 390, y: 240 },
+                score: 0,
+                best: 0,
+                eventsBound: false,
+
+                bindEvents() {
+                    if (this.eventsBound) return;
+                    this.eventsBound = true;
+                    const self = this;
+
+                    const getCoords = function (e) {
+                        const rect = self.canvas.getBoundingClientRect();
+                        const pt = e.touches && e.touches[0] ? e.touches[0] : e;
+                        return {
+                            x: ((pt.clientX - rect.left) / rect.width) * 780,
+                            y: ((pt.clientY - rect.top) / rect.height) * 480
+                        };
+                    };
+
+                    window.addEventListener('keydown', function (e) {
+                        const k = e.key.toLowerCase();
+                        self.keys[k] = true;
+                        if (!self.currentId || !App.portalOpen) return;
+                        if (['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) {
+                            e.preventDefault();
+                        }
+                        self.onKeyDown(k);
+                    });
+
+                    window.addEventListener('keyup', function (e) {
+                        self.keys[e.key.toLowerCase()] = false;
+                    });
+
+                    self.canvas.addEventListener('mousemove', function (e) {
+                        if (!self.currentId || !App.portalOpen) return;
+                        self.mouse = getCoords(e);
+                    });
+
+                    self.canvas.addEventListener('mousedown', function (e) {
+                        if (!self.currentId || !App.portalOpen) return;
+                        const pt = getCoords(e);
+                        self.mouse = pt;
+                        self.onClick(pt.x, pt.y, e.button);
+                    });
+
+                    self.canvas.addEventListener('contextmenu', function (e) {
+                        e.preventDefault();
+                    });
+
+                    self.canvas.addEventListener('touchstart', function (e) {
+                        if (!self.currentId || !App.portalOpen) return;
+                        e.preventDefault();
+                        const pt = getCoords(e);
+                        self.mouse = pt;
+                        self.onClick(pt.x, pt.y, 0);
+                    }, { passive: false });
+                },
+
+                setScore(val) {
+                    this.score = val;
+                    document.getElementById('stage-score').textContent = String(val);
+                    if (val > this.best) {
+                        this.best = val;
+                        document.getElementById('stage-best').textContent = String(val);
+                        try { localStorage.setItem('edunotes_sc_' + this.currentId, String(val)); } catch (_) {}
+                    }
+                },
+
+                stop() {
+                    if (this.rafId) cancelAnimationFrame(this.rafId);
+                    this.rafId = null;
+                    this.currentId = null;
+                    this.state = null;
+                },
+
+                start(id) {
+                    this.bindEvents();
+                    this.stop();
+                    this.currentId = id;
+                    this.setScore(0);
+                    try { this.best = Number(localStorage.getItem('edunotes_sc_' + id) || '0'); } catch (_) { this.best = 0; }
+                    document.getElementById('stage-best').textContent = String(this.best);
+                    this.initGame(id);
+
+                    const self = this;
+                    const tick = function () {
+                        if (!self.currentId || !App.portalOpen) return;
+                        self.update();
+                        self.draw();
+                        self.rafId = requestAnimationFrame(tick);
+                    };
+                    this.rafId = requestAnimationFrame(tick);
+                },
+
+                initGame(id) {
+                    if (id === 'snake') {
+                        this.state = {
+                            cols: 26, rows: 16,
+                            dir: { x: 1, y: 0 }, nextDir: { x: 1, y: 0 },
+                            snake: [{ x: 8, y: 8 }, { x: 7, y: 8 }, { x: 6, y: 8 }],
+                            food: { x: 17, y: 8 },
+                            frame: 0, over: false
+                        };
+                    } else if (id === 'tetris') {
+                        const shapes = [
+                            [[1,1,1,1]],
+                            [[1,1],[1,1]],
+                            [[0,1,0],[1,1,1]],
+                            [[1,1,0],[0,1,1]],
+                            [[0,1,1],[1,1,0]],
+                            [[1,0,0],[1,1,1]],
+                            [[0,0,1],[1,1,1]]
+                        ];
+                        const colors = ['#22d3ee','#facc15','#a855f7','#22c55e','#ef4444','#3b82f6','#f97316'];
+                        const spawn = function () {
+                            const idx = Math.floor(Math.random() * shapes.length);
+                            return { m: shapes[idx].map(function (r) { return r.slice(); }), c: colors[idx], x: 3, y: 0 };
+                        };
+                        this.state = {
+                            grid: Array.from({ length: 20 }, function () { return Array(10).fill(null); }),
+                            cur: spawn(),
+                            spawn: spawn,
+                            frame: 0,
+                            over: false
+                        };
+                    } else if (id === 'g2048') {
+                        this.state = {
+                            grid: Array.from({ length: 4 }, function () { return [0,0,0,0]; }),
+                            over: false
+                        };
+                        this.spawn2048();
+                        this.spawn2048();
+                    } else if (id === 'breakout') {
+                        const bricks = [];
+                        const palette = ['#ef4444','#f97316','#eab308','#22c55e','#38bdf8'];
+                        for (let r = 0; r < 5; r++) {
+                            for (let c = 0; c < 10; c++) {
+                                bricks.push({ x: 45 + c * 70, y: 45 + r * 26, w: 64, h: 18, c: palette[r], alive: true });
+                            }
+                        }
+                        this.state = {
+                            px: 390, pw: 110,
+                            bx: 390, by: 380, vx: 4.2, vy: -4.4,
+                            bricks: bricks, over: false, won: false
+                        };
+                    } else if (id === 'shooter') {
+                        const enemies = [];
+                        for (let r = 0; r < 3; r++) {
+                            for (let c = 0; c < 8; c++) {
+                                enemies.push({ x: 110 + c * 78, y: 55 + r * 42, alive: true });
+                            }
+                        }
+                        this.state = {
+                            px: 390, bullets: [], enemies: enemies,
+                            frame: 0, dir: 1, over: false, won: false
+                        };
+                    } else if (id === 'flappy') {
+                        this.state = {
+                            y: 220, vy: 0,
+                            pipes: [
+                                { x: 480, gapY: 210, passed: false },
+                                { x: 760, gapY: 250, passed: false }
+                            ],
+                            over: false
+                        };
+                    } else if (id === 'geodash') {
+                        this.state = {
+                            y: 350, vy: 0, onGround: true,
+                            obsX: 780, obsType: 'spike',
+                            over: false
+                        };
+                    } else if (id === 'pong') {
+                        this.state = {
+                            py: 200, ay: 200,
+                            bx: 390, by: 240, vx: 5, vy: 3.4,
+                            pScore: 0, aScore: 0, over: false
+                        };
+                    } else if (id === 'mines') {
+                        const size = 10;
+                        const board = Array.from({ length: size }, function () {
+                            return Array.from({ length: size }, function () {
+                                return { mine: false, open: false, flag: false, count: 0 };
+                            });
+                        });
+                        let placed = 0;
+                        while (placed < 14) {
+                            const r = Math.floor(Math.random() * size);
+                            const c = Math.floor(Math.random() * size);
+                            if (!board[r][c].mine) {
+                                board[r][c].mine = true;
+                                placed += 1;
+                            }
+                        }
+                        for (let r = 0; r < size; r++) {
+                            for (let c = 0; c < size; c++) {
+                                let cnt = 0;
+                                for (let dr = -1; dr <= 1; dr++) {
+                                    for (let dc = -1; dc <= 1; dc++) {
+                                        if (board[r + dr] && board[r + dr][c + dc] && board[r + dr][c + dc].mine) cnt += 1;
+                                    }
+                                }
+                                board[r][c].count = cnt;
+                            }
+                        }
+                        this.state = { size: size, board: board, over: false, won: false };
+                    } else if (id === 'cookie') {
+                        let saved = null;
+                        try { saved = JSON.parse(localStorage.getItem('edunotes_cookie_v2') || 'null'); } catch (_) {}
+                        const upgrades = [
+                            { name: 'Curseur', cost: 15, cps: 1, owned: 0 },
+                            { name: 'Atelier', cost: 80, cps: 5, owned: 0 },
+                            { name: 'Labo', cost: 350, cps: 22, owned: 0 }
+                        ];
+                        if (saved && Array.isArray(saved.owned)) {
+                            upgrades.forEach(function (u, i) { u.owned = saved.owned[i] || 0; });
+                        }
+                        const cookies = saved && typeof saved.cookies === 'number' ? saved.cookies : 0;
+                        this.setScore(Math.floor(cookies));
+                        this.state = { cookies: cookies, upgrades: upgrades, pulse: 0, frame: 0 };
+                    } else if (id === 'dino') {
+                        this.state = {
+                            y: 350, vy: 0, onGround: true,
+                            obsX: 780, obsW: 26, obsH: 42,
+                            speed: 6.2, frame: 0, over: false
+                        };
+                    } else if (id === 'memory') {
+                        const syms = ['A','B','C','D','E','F','G','H'];
+                        const deck = syms.concat(syms)
+                            .map(function (sym) { return { sym: sym, open: false, matched: false }; })
+                            .sort(function () { return Math.random() - 0.5; });
+                        this.state = { cards: deck, firstIdx: null, lockTimer: 0, pairs: 0, won: false };
+                    }
+                },
+
+                onKeyDown(k) {
+                    const id = this.currentId;
+                    const s = this.state;
+                    if (!s) return;
+
+                    if (s.over || s.won) {
+                        if (k === ' ' || k === 'enter' || k === 'r') this.start(id);
+                        return;
+                    }
+
+                    if (id === 'snake') {
+                        if ((k === 'arrowleft' || k === 'a' || k === 'q') && s.dir.x !== 1) s.nextDir = { x: -1, y: 0 };
+                        if ((k === 'arrowright' || k === 'd') && s.dir.x !== -1) s.nextDir = { x: 1, y: 0 };
+                        if ((k === 'arrowup' || k === 'w' || k === 'z') && s.dir.y !== 1) s.nextDir = { x: 0, y: -1 };
+                        if ((k === 'arrowdown' || k === 's') && s.dir.y !== -1) s.nextDir = { x: 0, y: 1 };
+                    } else if (id === 'tetris') {
+                        if (k === 'arrowleft' && !this.tetHit(s.cur.m, s.cur.x - 1, s.cur.y)) s.cur.x -= 1;
+                        if (k === 'arrowright' && !this.tetHit(s.cur.m, s.cur.x + 1, s.cur.y)) s.cur.x += 1;
+                        if (k === 'arrowdown' && !this.tetHit(s.cur.m, s.cur.x, s.cur.y + 1)) s.cur.y += 1;
+                        if (k === 'arrowup') {
+                            const rot = s.cur.m[0].map(function (_, i) {
+                                return s.cur.m.map(function (row) { return row[i]; }).reverse();
+                            });
+                            if (!this.tetHit(rot, s.cur.x, s.cur.y)) s.cur.m = rot;
+                        }
+                    } else if (id === 'g2048') {
+                        if (k === 'arrowleft' || k === 'a' || k === 'q') this.slide2048('L');
+                        if (k === 'arrowright' || k === 'd') this.slide2048('R');
+                        if (k === 'arrowup' || k === 'w' || k === 'z') this.slide2048('U');
+                        if (k === 'arrowdown' || k === 's') this.slide2048('D');
+                    } else if (id === 'shooter' && k === ' ') {
+                        s.bullets.push({ x: s.px, y: 420 });
+                        Sound.beep(780, 0.06, 'square');
+                    } else if (id === 'flappy' && (k === ' ' || k === 'arrowup' || k === 'w')) {
+                        s.vy = -7.6;
+                        Sound.beep(520, 0.08, 'sine');
+                    } else if (id === 'geodash' && (k === ' ' || k === 'arrowup' || k === 'w') && s.onGround) {
+                        s.vy = -12.2;
+                        s.onGround = false;
+                        Sound.beep(440, 0.09, 'triangle');
+                    } else if (id === 'dino' && (k === ' ' || k === 'arrowup' || k === 'w') && s.onGround) {
+                        s.vy = -12;
+                        s.onGround = false;
+                        Sound.beep(420, 0.08, 'triangle');
+                    }
+                },
+
+                onClick(x, y, button) {
+                    const id = this.currentId;
+                    const s = this.state;
+                    if (!s) return;
+
+                    if (s.over || s.won) {
+                        this.start(id);
+                        return;
+                    }
+
+                    if (id === 'flappy') {
+                        s.vy = -7.6;
+                        Sound.beep(520, 0.08, 'sine');
+                    } else if (id === 'geodash' && s.onGround) {
+                        s.vy = -12.2;
+                        s.onGround = false;
+                        Sound.beep(440, 0.09, 'triangle');
+                    } else if (id === 'dino' && s.onGround) {
+                        s.vy = -12;
+                        s.onGround = false;
+                        Sound.beep(420, 0.08, 'triangle');
+                    } else if (id === 'shooter') {
+                        s.bullets.push({ x: s.px, y: 420 });
+                        Sound.beep(780, 0.06, 'square');
+                    } else if (id === 'mines') {
+                        const cellSize = 38;
+                        const ox = 200, oy = 45;
+                        const c = Math.floor((x - ox) / cellSize);
+                        const r = Math.floor((y - oy) / cellSize);
+                        if (r >= 0 && r < s.size && c >= 0 && c < s.size) {
+                            const cell = s.board[r][c];
+                            if (button === 2) {
+                                if (!cell.open) cell.flag = !cell.flag;
+                            } else if (!cell.flag && !cell.open) {
+                                this.openMineCell(r, c);
+                            }
+                        }
+                    } else if (id === 'cookie') {
+                        if (Math.hypot(x - 230, y - 245) <= 95) {
+                            s.cookies += 1;
+                            s.pulse = 7;
+                            this.setScore(Math.floor(s.cookies));
+                            Sound.beep(600, 0.04, 'sine');
+                        }
+                        for (let i = 0; i < s.upgrades.length; i++) {
+                            const u = s.upgrades[i];
+                            const uy = 110 + i * 95;
+                            if (x >= 450 && x <= 720 && y >= uy && y <= uy + 72 && s.cookies >= u.cost) {
+                                s.cookies -= u.cost;
+                                u.owned += 1;
+                                u.cost = Math.floor(u.cost * 1.45);
+                                this.setScore(Math.floor(s.cookies));
+                                Sound.beep(880, 0.08, 'triangle');
+                            }
+                        }
+                    } else if (id === 'memory') {
+                        if (s.lockTimer > 0) return;
+                        const cw = 115, ch = 85, ox = 150, oy = 55;
+                        const c = Math.floor((x - ox) / (cw + 12));
+                        const r = Math.floor((y - oy) / (ch + 12));
+                        if (r >= 0 && r < 4 && c >= 0 && c < 4) {
+                            const idx = r * 4 + c;
+                            const card = s.cards[idx];
+                            if (card && !card.open && !card.matched) {
+                                card.open = true;
+                                if (s.firstIdx === null) {
+                                    s.firstIdx = idx;
+                                } else {
+                                    const first = s.cards[s.firstIdx];
+                                    if (first.sym === card.sym) {
+                                        first.matched = true;
+                                        card.matched = true;
+                                        s.pairs += 1;
+                                        this.setScore(s.pairs * 50);
+                                        Sound.beep(760, 0.08, 'sine');
+                                        if (s.pairs === 8) s.won = true;
+                                    } else {
+                                        s.lockTimer = 35;
+                                    }
+                                    s.firstIdx = null;
+                                }
+                            }
+                        }
+                    }
+                },
+
+                spawn2048() {
+                    const empty = [];
+                    const g = this.state.grid;
+                    for (let r = 0; r < 4; r++) {
+                        for (let c = 0; c < 4; c++) {
+                            if (g[r][c] === 0) empty.push([r, c]);
+                        }
+                    }
+                    if (empty.length) {
+                        const spot = empty[Math.floor(Math.random() * empty.length)];
+                        g[spot[0]][spot[1]] = Math.random() < 0.85 ? 2 : 4;
+                    }
+                },
+
+                slide2048(dir) {
+                    const g = this.state.grid;
+                    const self = this;
+                    let moved = false;
+                    const mergeLine = function (arr) {
+                        const compact = arr.filter(function (v) { return v !== 0; });
+                        for (let i = 0; i < compact.length - 1; i++) {
+                            if (compact[i] === compact[i + 1]) {
+                                compact[i] *= 2;
+                                self.setScore(self.score + compact[i]);
+                                compact[i + 1] = 0;
+                            }
+                        }
+                        const out = compact.filter(function (v) { return v !== 0; });
+                        while (out.length < 4) out.push(0);
+                        return out;
+                    };
+
+                    for (let i = 0; i < 4; i++) {
+                        let line = (dir === 'L' || dir === 'R')
+                            ? g[i].slice()
+                            : [g[0][i], g[1][i], g[2][i], g[3][i]];
+                        if (dir === 'R' || dir === 'D') line.reverse();
+                        const merged = mergeLine(line);
+                        if (dir === 'R' || dir === 'D') merged.reverse();
+
+                        for (let j = 0; j < 4; j++) {
+                            const prev = (dir === 'L' || dir === 'R') ? g[i][j] : g[j][i];
+                            if (prev !== merged[j]) moved = true;
+                            if (dir === 'L' || dir === 'R') g[i][j] = merged[j];
+                            else g[j][i] = merged[j];
+                        }
+                    }
+                    if (moved) {
+                        this.spawn2048();
+                        Sound.beep(480, 0.05, 'sine');
+                    }
+                },
+
+                tetHit(m, nx, ny) {
+                    const grid = this.state.grid;
+                    for (let r = 0; r < m.length; r++) {
+                        for (let c = 0; c < m[r].length; c++) {
+                            if (m[r][c]) {
+                                const x = nx + c;
+                                const y = ny + r;
+                                if (x < 0 || x >= 10 || y >= 20) return true;
+                                if (y >= 0 && grid[y][x]) return true;
+                            }
+                        }
+                    }
+                    return false;
+                },
+
+                lockTetromino() {
+                    const s = this.state;
+                    for (let r = 0; r < s.cur.m.length; r++) {
+                        for (let c = 0; c < s.cur.m[r].length; c++) {
+                            if (s.cur.m[r][c] && s.cur.y + r >= 0) {
+                                s.grid[s.cur.y + r][s.cur.x + c] = s.cur.c;
+                            }
+                        }
+                    }
+                    let cleared = 0;
+                    for (let r = 19; r >= 0; r--) {
+                        if (s.grid[r].every(Boolean)) {
+                            s.grid.splice(r, 1);
+                            s.grid.unshift(Array(10).fill(null));
+                            cleared += 1;
+                            r += 1;
+                        }
+                    }
+                    if (cleared > 0) {
+                        this.setScore(this.score + cleared * 100);
+                        Sound.beep(660, 0.1, 'triangle');
+                    }
+                    s.cur = s.spawn();
+                    if (this.tetHit(s.cur.m, s.cur.x, s.cur.y)) s.over = true;
+                },
+
+                openMineCell(r, c) {
+                    const s = this.state;
+                    const cell = s.board[r] && s.board[r][c];
+                    if (!cell || cell.open || cell.flag) return;
+                    cell.open = true;
+                    if (cell.mine) {
+                        s.over = true;
+                        Sound.beep(160, 0.2, 'sawtooth');
+                        return;
+                    }
+                    this.setScore(this.score + 10);
+                    if (cell.count === 0) {
+                        for (let dr = -1; dr <= 1; dr++) {
+                            for (let dc = -1; dc <= 1; dc++) {
+                                if (dr !== 0 || dc !== 0) this.openMineCell(r + dr, c + dc);
+                            }
+                        }
+                    }
+                    let closedSafe = 0;
+                    for (let i = 0; i < s.size; i++) {
+                        for (let j = 0; j < s.size; j++) {
+                            if (!s.board[i][j].open && !s.board[i][j].mine) closedSafe += 1;
+                        }
+                    }
+                    if (closedSafe === 0) s.won = true;
+                },
+
+                update() {
+                    const id = this.currentId;
+                    const s = this.state;
+                    if (!s || s.over || s.won) return;
+
+                    if (id === 'snake') {
+                        s.frame += 1;
+                        if (s.frame % 7 === 0) {
+                            s.dir = s.nextDir;
+                            const head = s.snake[0];
+                            const nx = (head.x + s.dir.x + s.cols) % s.cols;
+                            const ny = (head.y + s.dir.y + s.rows) % s.rows;
+                            if (s.snake.some(function (seg) { return seg.x === nx && seg.y === ny; })) {
+                                s.over = true;
+                                Sound.beep(180, 0.2, 'sawtooth');
+                                return;
+                            }
+                            s.snake.unshift({ x: nx, y: ny });
+                            if (nx === s.food.x && ny === s.food.y) {
+                                this.setScore(this.score + 20);
+                                Sound.beep(700, 0.07, 'sine');
+                                s.food = {
+                                    x: Math.floor(Math.random() * s.cols),
+                                    y: Math.floor(Math.random() * s.rows)
+                                };
+                            } else {
+                                s.snake.pop();
+                            }
+                        }
+                    } else if (id === 'tetris') {
+                        s.frame += 1;
+                        if (s.frame % 26 === 0) {
+                            if (!this.tetHit(s.cur.m, s.cur.x, s.cur.y + 1)) s.cur.y += 1;
+                            else this.lockTetromino();
+                        }
+                    } else if (id === 'breakout') {
+                        if (this.keys.arrowleft || this.keys.a || this.keys.q) s.px -= 7;
+                        else if (this.keys.arrowright || this.keys.d) s.px += 7;
+                        else s.px = this.mouse.x;
+                        s.px = Math.max(s.pw / 2, Math.min(780 - s.pw / 2, s.px));
+
+                        s.bx += s.vx;
+                        s.by += s.vy;
+                        if (s.bx < 10 || s.bx > 770) s.vx *= -1;
+                        if (s.by < 10) s.vy *= -1;
+
+                        if (s.vy > 0 && s.by >= 435 && s.by <= 450 && Math.abs(s.bx - s.px) <= s.pw / 2 + 8) {
+                            s.vy = -Math.abs(s.vy);
+                            s.vx = ((s.bx - s.px) / (s.pw / 2)) * 5.2;
+                            Sound.beep(480, 0.05, 'sine');
+                        }
+
+                        for (let i = 0; i < s.bricks.length; i++) {
+                            const b = s.bricks[i];
+                            if (b.alive && s.bx + 8 > b.x && s.bx - 8 < b.x + b.w && s.by + 8 > b.y && s.by - 8 < b.y + b.h) {
+                                b.alive = false;
+                                s.vy *= -1;
+                                this.setScore(this.score + 25);
+                                Sound.beep(620, 0.06, 'triangle');
+                            }
+                        }
+
+                        if (s.by > 490) s.over = true;
+                        if (s.bricks.every(function (b) { return !b.alive; })) s.won = true;
+                    } else if (id === 'shooter') {
+                        if (this.keys.arrowleft || this.keys.a || this.keys.q) s.px -= 6.5;
+                        else if (this.keys.arrowright || this.keys.d) s.px += 6.5;
+                        else s.px = this.mouse.x;
+                        s.px = Math.max(25, Math.min(755, s.px));
+
+                        s.bullets.forEach(function (b) { b.y -= 8.5; });
+                        s.bullets = s.bullets.filter(function (b) { return b.y > -10; });
+
+                        s.frame += 1;
+                        if (s.frame % 45 === 0) s.dir *= -1;
+                        s.enemies.forEach(function (en) {
+                            if (!en.alive) return;
+                            en.x += s.dir * 1.4;
+                            if (s.frame % 180 === 0) en.y += 14;
+                            if (en.y > 410) s.over = true;
+                        });
+
+                        const self = this;
+                        s.bullets.forEach(function (b) {
+                            s.enemies.forEach(function (en) {
+                                if (en.alive && Math.abs(b.x - en.x) < 20 && Math.abs(b.y - en.y) < 16) {
+                                    en.alive = false;
+                                    b.y = -50;
+                                    self.setScore(self.score + 40);
+                                    Sound.beep(540, 0.06, 'square');
+                                }
+                            });
+                        });
+
+                        if (s.enemies.every(function (en) { return !en.alive; })) s.won = true;
+                    } else if (id === 'flappy') {
+                        s.vy += 0.42;
+                        s.y += s.vy;
+                        if (s.y < 14 || s.y > 466) s.over = true;
+
+                        for (let i = 0; i < s.pipes.length; i++) {
+                            const p = s.pipes[i];
+                            p.x -= 4;
+                            if (!p.passed && p.x + 28 < 150) {
+                                p.passed = true;
+                                this.setScore(this.score + 1);
+                                Sound.beep(720, 0.07, 'sine');
+                            }
+                            if (150 + 14 > p.x && 150 - 14 < p.x + 56) {
+                                if (s.y - 14 < p.gapY - 68 || s.y + 14 > p.gapY + 68) {
+                                    s.over = true;
+                                }
+                            }
+                        }
+
+                        if (s.pipes[0].x < -70) {
+                            s.pipes.shift();
+                            s.pipes.push({ x: s.pipes[s.pipes.length - 1].x + 280, gapY: 120 + Math.random() * 230, passed: false });
+                        }
+                    } else if (id === 'geodash') {
+                        s.vy += 0.68;
+                        s.y += s.vy;
+                        if (s.y >= 350) {
+                            s.y = 350;
+                            s.vy = 0;
+                            s.onGround = true;
+                        }
+                        s.obsX -= 6.8;
+                        if (s.obsX < -30) {
+                            s.obsX = 780 + Math.random() * 140;
+                            this.setScore(this.score + 10);
+                        }
+                        if (s.obsX > 120 && s.obsX < 165 && s.y + 34 > 356) {
+                            s.over = true;
+                            Sound.beep(180, 0.2, 'sawtooth');
+                        }
+                    } else if (id === 'pong') {
+                        if (this.keys.arrowup || this.keys.w || this.keys.z) s.py -= 6.5;
+                        else if (this.keys.arrowdown || this.keys.s) s.py += 6.5;
+                        else s.py = this.mouse.y - 40;
+                        s.py = Math.max(10, Math.min(390, s.py));
+
+                        if (s.ay + 40 < s.by) s.ay += 4.2;
+                        else if (s.ay + 40 > s.by) s.ay -= 4.2;
+                        s.ay = Math.max(10, Math.min(390, s.ay));
+
+                        s.bx += s.vx;
+                        s.by += s.vy;
+                        if (s.by < 10 || s.by > 470) s.vy *= -1;
+
+                        if (s.bx < 36 && s.bx > 18 && s.by >= s.py && s.by <= s.py + 80) {
+                            s.vx = Math.abs(s.vx) * 1.03;
+                            Sound.beep(520, 0.04, 'sine');
+                        }
+                        if (s.bx > 744 && s.bx < 762 && s.by >= s.ay && s.by <= s.ay + 80) {
+                            s.vx = -Math.abs(s.vx) * 1.03;
+                            Sound.beep(440, 0.04, 'sine');
+                        }
+
+                        if (s.bx < 0) {
+                            s.aScore += 1;
+                            s.bx = 390; s.by = 240; s.vx = 5;
+                            if (s.aScore >= 7) s.over = true;
+                        } else if (s.bx > 780) {
+                            s.pScore += 1;
+                            this.setScore(s.pScore * 20);
+                            s.bx = 390; s.by = 240; s.vx = -5;
+                            if (s.pScore >= 7) s.won = true;
+                        }
+                    } else if (id === 'cookie') {
+                        s.frame += 1;
+                        if (s.pulse > 0) s.pulse -= 0.8;
+                        const cps = s.upgrades.reduce(function (acc, u) { return acc + u.owned * u.cps; }, 0);
+                        s.cookies += cps / 60;
+                        this.setScore(Math.floor(s.cookies));
+                        if (s.frame % 120 === 0) {
+                            try {
+                                localStorage.setItem('edunotes_cookie_v2', JSON.stringify({
+                                    cookies: s.cookies,
+                                    owned: s.upgrades.map(function (u) { return u.owned; })
+                                }));
+                            } catch (_) {}
+                        }
+                    } else if (id === 'dino') {
+                        s.frame += 1;
+                        s.speed = Math.min(11, 6.2 + s.frame * 0.002);
+                        if (s.frame % 12 === 0) this.setScore(this.score + 1);
+                        s.vy += 0.65;
+                        s.y += s.vy;
+                        if (s.y >= 350) {
+                            s.y = 350;
+                            s.vy = 0;
+                            s.onGround = true;
+                        }
+                        s.obsX -= s.speed;
+                        if (s.obsX < -40) s.obsX = 780 + Math.random() * 180;
+                        if (s.obsX < 145 && s.obsX + s.obsW > 115 && s.y + 36 > 392 - s.obsH) {
+                            s.over = true;
+                            Sound.beep(180, 0.2, 'sawtooth');
+                        }
+                    } else if (id === 'memory') {
+                        if (s.lockTimer > 0) {
+                            s.lockTimer -= 1;
+                            if (s.lockTimer === 0) {
+                                s.cards.forEach(function (c) { if (!c.matched) c.open = false; });
+                            }
+                        }
+                    }
+                },
+
+                draw() {
+                    const ctx = this.ctx;
+                    const id = this.currentId;
+                    const s = this.state;
+                    ctx.clearRect(0, 0, 780, 480);
+                    ctx.fillStyle = '#070b14';
+                    ctx.fillRect(0, 0, 780, 480);
+
+                    if (!s) return;
+
+                    if (id === 'snake') {
+                        const cw = 30;
+                        ctx.fillStyle = '#f43f5e';
+                        ctx.fillRect(s.food.x * cw + 4, s.food.y * cw + 4, cw - 8, cw - 8);
+                        s.snake.forEach(function (seg, idx) {
+                            ctx.fillStyle = idx === 0 ? '#22d3ee' : '#10b981';
+                            ctx.fillRect(seg.x * cw + 2, seg.y * cw + 2, cw - 4, cw - 4);
+                        });
+                    } else if (id === 'tetris') {
+                        const ox = 240, oy = 20, bs = 22;
+                        ctx.strokeStyle = '#334155';
+                        ctx.strokeRect(ox, oy, 10 * bs, 20 * bs);
+                        for (let r = 0; r < 20; r++) {
+                            for (let c = 0; c < 10; c++) {
+                                if (s.grid[r][c]) {
+                                    ctx.fillStyle = s.grid[r][c];
+                                    ctx.fillRect(ox + c * bs + 1, oy + r * bs + 1, bs - 2, bs - 2);
+                                }
+                            }
+                        }
+                        ctx.fillStyle = s.cur.c;
+                        for (let r = 0; r < s.cur.m.length; r++) {
+                            for (let c = 0; c < s.cur.m[r].length; c++) {
+                                if (s.cur.m[r][c]) {
+                                    ctx.fillRect(ox + (s.cur.x + c) * bs + 1, oy + (s.cur.y + r) * bs + 1, bs - 2, bs - 2);
+                                }
+                            }
+                        }
+                    } else if (id === 'g2048') {
+                        const ox = 190, oy = 40, ts = 96;
+                        for (let r = 0; r < 4; r++) {
+                            for (let c = 0; c < 4; c++) {
+                                const val = s.grid[r][c];
+                                ctx.fillStyle = val ? '#1e293b' : '#0f172a';
+                                ctx.fillRect(ox + c * ts, oy + r * ts, ts - 8, ts - 8);
+                                if (val) {
+                                    ctx.fillStyle = '#22d3ee';
+                                    ctx.font = 'bold 26px sans-serif';
+                                    ctx.textAlign = 'center';
+                                    ctx.fillText(String(val), ox + c * ts + (ts - 8) / 2, oy + r * ts + (ts - 8) / 2 + 9);
+                                }
+                            }
+                        }
+                        ctx.textAlign = 'left';
+                    } else if (id === 'breakout') {
+                        s.bricks.forEach(function (b) {
+                            if (b.alive) {
+                                ctx.fillStyle = b.c;
+                                ctx.fillRect(b.x, b.y, b.w, b.h);
+                            }
+                        });
+                        ctx.fillStyle = '#e2e8f0';
+                        ctx.fillRect(s.px - s.pw / 2, 440, s.pw, 12);
+                        ctx.fillStyle = '#22d3ee';
+                        ctx.beginPath();
+                        ctx.arc(s.bx, s.by, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (id === 'shooter') {
+                        ctx.fillStyle = '#22d3ee';
+                        ctx.fillRect(s.px - 18, 425, 36, 16);
+                        ctx.fillStyle = '#facc15';
+                        s.bullets.forEach(function (b) { ctx.fillRect(b.x - 2, b.y, 4, 12); });
+                        ctx.fillStyle = '#f43f5e';
+                        s.enemies.forEach(function (en) {
+                            if (en.alive) ctx.fillRect(en.x - 16, en.y - 12, 32, 24);
+                        });
+                    } else if (id === 'flappy') {
+                        ctx.fillStyle = '#10b981';
+                        s.pipes.forEach(function (p) {
+                            ctx.fillRect(p.x, 0, 56, p.gapY - 68);
+                            ctx.fillRect(p.x, p.gapY + 68, 56, 480 - (p.gapY + 68));
+                        });
+                        ctx.fillStyle = '#facc15';
+                        ctx.beginPath();
+                        ctx.arc(150, s.y, 14, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (id === 'geodash') {
+                        ctx.fillStyle = '#1e293b';
+                        ctx.fillRect(0, 390, 780, 90);
+                        ctx.fillStyle = '#f43f5e';
+                        ctx.beginPath();
+                        ctx.moveTo(s.obsX - 16, 390);
+                        ctx.lineTo(s.obsX, 358);
+                        ctx.lineTo(s.obsX + 16, 390);
+                        ctx.fill();
+                        ctx.fillStyle = '#22d3ee';
+                        ctx.fillRect(126, s.y, 34, 34);
+                    } else if (id === 'pong') {
+                        ctx.fillStyle = '#22d3ee';
+                        ctx.fillRect(20, s.py, 12, 80);
+                        ctx.fillStyle = '#f43f5e';
+                        ctx.fillRect(748, s.ay, 12, 80);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(s.bx - 7, s.by - 7, 14, 14);
+                        ctx.font = 'bold 20px sans-serif';
+                        ctx.fillText('Vous : ' + s.pScore + '   IA : ' + s.aScore, 310, 34);
+                    } else if (id === 'mines') {
+                        const cellSize = 38, ox = 200, oy = 45;
+                        for (let r = 0; r < s.size; r++) {
+                            for (let c = 0; c < s.size; c++) {
+                                const cell = s.board[r][c];
+                                const x = ox + c * cellSize;
+                                const y = oy + r * cellSize;
+                                ctx.fillStyle = cell.open ? '#1e293b' : '#334155';
+                                ctx.fillRect(x, y, cellSize - 2, cellSize - 2);
+                                ctx.fillStyle = '#ffffff';
+                                ctx.font = 'bold 14px sans-serif';
+                                ctx.textAlign = 'center';
+                                if (cell.open) {
+                                    if (cell.mine) ctx.fillText('X', x + 18, y + 23);
+                                    else if (cell.count > 0) ctx.fillText(String(cell.count), x + 18, y + 23);
+                                } else if (cell.flag) {
+                                    ctx.fillStyle = '#facc15';
+                                    ctx.fillText('F', x + 18, y + 23);
+                                }
+                            }
+                        }
+                        ctx.textAlign = 'left';
+                    } else if (id === 'cookie') {
+                        const r = 88 + s.pulse;
+                        ctx.fillStyle = '#d97706';
+                        ctx.beginPath();
+                        ctx.arc(230, 245, r, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 22px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('Cookies : ' + Math.floor(s.cookies), 230, 75);
+                        ctx.textAlign = 'left';
+
+                        for (let i = 0; i < s.upgrades.length; i++) {
+                            const u = s.upgrades[i];
+                            const uy = 110 + i * 95;
+                            ctx.fillStyle = s.cookies >= u.cost ? '#1e293b' : '#111827';
+                            ctx.fillRect(450, uy, 270, 72);
+                            ctx.strokeStyle = '#334155';
+                            ctx.strokeRect(450, uy, 270, 72);
+                            ctx.fillStyle = '#ffffff';
+                            ctx.font = 'bold 15px sans-serif';
+                            ctx.fillText(u.name + ' (x' + u.owned + ')', 466, uy + 28);
+                            ctx.fillStyle = '#22d3ee';
+                            ctx.font = '13px sans-serif';
+                            ctx.fillText('Coût : ' + u.cost + ' | +' + u.cps + '/s', 466, uy + 52);
+                        }
+                    } else if (id === 'dino') {
+                        ctx.fillStyle = '#334155';
+                        ctx.fillRect(0, 392, 780, 88);
+                        ctx.fillStyle = '#f97316';
+                        ctx.fillRect(s.obsX, 392 - s.obsH, s.obsW, s.obsH);
+                        ctx.fillStyle = '#22d3ee';
+                        ctx.fillRect(115, s.y, 32, 36);
+                    } else if (id === 'memory') {
+                        const cw = 115, ch = 85, ox = 150, oy = 55;
+                        for (let r = 0; r < 4; r++) {
+                            for (let c = 0; c < 4; c++) {
+                                const card = s.cards[r * 4 + c];
+                                const x = ox + c * (cw + 12);
+                                const y = oy + r * (ch + 12);
+                                ctx.fillStyle = (card.open || card.matched) ? '#1e293b' : '#312e81';
+                                ctx.fillRect(x, y, cw, ch);
+                                if (card.open || card.matched) {
+                                    ctx.fillStyle = '#22d3ee';
+                                    ctx.font = 'bold 28px sans-serif';
+                                    ctx.textAlign = 'center';
+                                    ctx.fillText(card.sym, x + cw / 2, y + ch / 2 + 10);
+                                }
+                            }
+                        }
+                        ctx.textAlign = 'left';
+                    }
+
+                    if (s.over || s.won) {
+                        ctx.fillStyle = 'rgba(5, 8, 17, 0.78)';
+                        ctx.fillRect(0, 0, 780, 480);
+                        ctx.fillStyle = s.won ? '#34d399' : '#f87171';
+                        ctx.font = 'bold 30px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(s.won ? 'Victoire' : 'Fin de partie', 390, 225);
+                        ctx.fillStyle = '#e2e8f0';
+                        ctx.font = '15px sans-serif';
+                        ctx.fillText('Clique ou appuie sur Espace pour rejouer', 390, 265);
+                        ctx.textAlign = 'left';
+                    }
+                }
+            };
+
+            /* ========================================================================
+               CODE EXECUTOR (JS, HTML, PYTHON, LUAU, SQL) + ASSISTANT IA
+               ======================================================================== */
+            const CODE_STARTERS = {
+                js: [
+                    '// Canvas 2D : ctx, width, height, keys, dt',
+                    'let x = 120, y = 110;',
+                    'let target = { x: 380, y: 110 };',
+                    'let score = 0;',
+                    '',
+                    'function update(dt) {',
+                    '    const spd = 220 * dt;',
+                    '    if (keys.arrowleft || keys.a || keys.q) x -= spd;',
+                    '    if (keys.arrowright || keys.d) x += spd;',
+                    '    if (keys.arrowup || keys.w || keys.z) y -= spd;',
+                    '    if (keys.arrowdown || keys.s) y += spd;',
+                    '    if (Math.hypot(x - target.x, y - target.y) < 24) {',
+                    '        score += 1;',
+                    '        target.x = 50 + Math.random() * (width - 100);',
+                    '        target.y = 40 + Math.random() * (height - 80);',
+                    '        console.log("Score :", score);',
+                    '    }',
+                    '}',
+                    '',
+                    'function draw(ctx) {',
+                    '    ctx.fillStyle = "#090d16";',
+                    '    ctx.fillRect(0, 0, width, height);',
+                    '    ctx.fillStyle = "#facc15";',
+                    '    ctx.beginPath(); ctx.arc(target.x, target.y, 10, 0, Math.PI * 2); ctx.fill();',
+                    '    ctx.fillStyle = "#22d3ee";',
+                    '    ctx.fillRect(x - 12, y - 12, 24, 24);',
+                    '}'
+                ].join('\n'),
+                html: [
+                    '<!DOCTYPE html>',
+                    '<html><body style="font-family:sans-serif;background:#0f172a;color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;">',
+                    '<h3 id="msg">Aperçu HTML / CSS / JS</h3>',
+                    '<button onclick="document.getElementById(\'msg\').textContent=\'Action exécutée\'" style="padding:8px 16px;border-radius:8px;border:none;background:#22d3ee;color:#090d16;font-weight:bold;cursor:pointer;">Cliquer</button>',
+                    '</body></html>'
+                ].join('\n'),
+                python: [
+                    '# Python : console et grille/tracé',
+                    'for i in range(1, 6):',
+                    '    print("Carré de", i, "=", i * i)',
+                    '',
+                    'forward(60)',
+                    'right(90)',
+                    'forward(60)'
+                ].join('\n'),
+                luau: [
+                    '-- Simulateur Luau / Roblox',
+                    'local part = Instance.new("Part")',
+                    'part.Name = "Baseplate"',
+                    'part.Position = Vector3.new(120, 90, 0)',
+                    'part.Size = Vector3.new(140, 24, 40)',
+                    'part.Color = "#22d3ee"',
+                    'print("Objet créé :", part.Name)'
+                ].join('\n'),
+                sql: [
+                    '-- Requêtes SQL sur table démo',
+                    'SELECT nom, matiere, note FROM resultats WHERE note >= 12 ORDER BY note DESC;'
+                ].join('\n')
+            };
+
+            const Executor = {
+                rafId: null,
+                ready: false,
+
+                init() {
+                    if (this.ready) return;
+                    this.ready = true;
+                    const self = this;
+                    const langSel = document.getElementById('exec-lang');
+                    const codeArea = document.getElementById('exec-code');
+                    codeArea.value = CODE_STARTERS[langSel.value] || '';
+                    this.updateStageType(langSel.value);
+
+                    langSel.addEventListener('change', function () {
+                        self.stop();
+                        codeArea.value = CODE_STARTERS[langSel.value] || '';
+                        self.updateStageType(langSel.value);
+                    });
+
+                    document.getElementById('exec-run').addEventListener('click', function () { self.run(); });
+                    document.getElementById('exec-stop').addEventListener('click', function () { self.stop(); });
+                    document.getElementById('exec-clear').addEventListener('click', function () {
+                        document.getElementById('exec-console').innerHTML = '';
+                    });
+
+                    document.getElementById('ai-gen-btn').addEventListener('click', function () { self.generateFromAI(); });
+                    document.querySelectorAll('.idea-chip').forEach(function (chip) {
+                        chip.addEventListener('click', function () {
+                            const lang = chip.dataset.lang;
+                            langSel.value = lang;
+                            codeArea.value = CODE_STARTERS[lang] || '';
+                            self.updateStageType(lang);
+                            document.getElementById('ai-prompt').value = chip.dataset.prompt;
+                            self.generateFromAI();
+                        });
+                    });
+                },
+
+                updateStageType(lang) {
+                    document.getElementById('exec-canvas').classList.toggle('hidden', !['js','python','luau'].includes(lang));
+                    document.getElementById('exec-iframe').classList.toggle('hidden', lang !== 'html');
+                    document.getElementById('exec-sql-box').classList.toggle('hidden', lang !== 'sql');
+                },
+
+                log(text, cls) {
+                    const box = document.getElementById('exec-console');
+                    const div = document.createElement('div');
+                    if (cls) div.className = cls;
+                    div.textContent = '> ' + String(text);
+                    box.appendChild(div);
+                    box.scrollTop = box.scrollHeight;
+                },
+
+                stop() {
+                    if (this.rafId) cancelAnimationFrame(this.rafId);
+                    this.rafId = null;
+                },
+
+                generateFromAI() {
+                    const model = document.getElementById('ai-model').value;
+                    const lang = document.getElementById('exec-lang').value;
+                    const prompt = document.getElementById('ai-prompt').value.trim() || 'script interactif';
+                    const codeArea = document.getElementById('exec-code');
+                    const fb = document.getElementById('ai-feedback');
+
+                    let generated = '';
+                    if (lang === 'js') {
+                        const speed = model === 'flash' ? 300 : (model === 'game2d' ? 250 : 210);
+                        generated = [
+                            '// IA (' + model + ') : ' + prompt,
+                            'let px = 100, py = 110, pts = 0;',
+                            'let coin = { x: 420, y: 110 };',
+                            'function update(dt) {',
+                            '    const s = ' + speed + ' * dt;',
+                            '    if (keys.arrowleft || keys.a || keys.q) px -= s;',
+                            '    if (keys.arrowright || keys.d) px += s;',
+                            '    if (keys.arrowup || keys.w || keys.z) py -= s;',
+                            '    if (keys.arrowdown || keys.s) py += s;',
+                            '    if (Math.hypot(px - coin.x, py - coin.y) < 22) {',
+                            '        pts += 10;',
+                            '        coin = { x: 40 + Math.random() * (width - 80), y: 40 + Math.random() * (height - 80) };',
+                            '        console.log("Points :", pts);',
+                            '    }',
+                            '}',
+                            'function draw(ctx) {',
+                            '    ctx.fillStyle = "#090d16"; ctx.fillRect(0, 0, width, height);',
+                            '    ctx.fillStyle = "#38bdf8"; ctx.fillRect(px - 11, py - 11, 22, 22);',
+                            '    ctx.fillStyle = "#facc15"; ctx.beginPath(); ctx.arc(coin.x, coin.y, 9, 0, Math.PI * 2); ctx.fill();',
+                            '}'
+                        ].join('\n');
+                    } else if (lang === 'html') {
+                        const accent = model === 'webui' ? '#818cf8' : '#22d3ee';
+                        generated = [
+                            '<!DOCTYPE html>',
+                            '<html><body style="font-family:sans-serif;background:#090d16;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">',
+                            '<div style="text-align:center;padding:24px;border:1px solid #243047;border-radius:12px;background:#111827;">',
+                            '<p style="margin-bottom:12px;">' + prompt.replace(/</g, '&lt;') + '</p>',
+                            '<button onclick="this.nextElementSibling.textContent = Number(this.nextElementSibling.textContent) + 1" style="padding:8px 14px;border:none;border-radius:8px;background:' + accent + ';color:#090d16;font-weight:bold;cursor:pointer;">+1</button>',
+                            '<span style="margin-left:10px;font-weight:bold;">0</span>',
+                            '</div></body></html>'
+                        ].join('\n');
+                    } else if (lang === 'python') {
+                        generated = [
+                            '# IA (' + model + ') : ' + prompt,
+                            'for n in range(1, 5):',
+                            '    print("Étape", n, "-> double =", n * 2)',
+                            'forward(50)',
+                            'right(90)',
+                            'forward(50)'
+                        ].join('\n');
+                    } else if (lang === 'luau') {
+                        generated = [
+                            '-- IA (' + model + ') : ' + prompt,
+                            'local block = Instance.new("Part")',
+                            'block.Name = "AIBlock"',
+                            'block.Position = Vector3.new(180, 100, 0)',
+                            'block.Size = Vector3.new(120, 28, 30)',
+                            'block.Color = "#818cf8"',
+                            'print("Spawn :", block.Name)'
+                        ].join('\n');
+                    } else {
+                        generated = [
+                            '-- IA (' + model + ') : ' + prompt,
+                            'SELECT nom, matiere, note FROM resultats WHERE note >= 14 ORDER BY note DESC;'
+                        ].join('\n');
+                    }
+
+                    codeArea.value = generated;
+                    fb.textContent = 'Généré (' + model + ')';
+                    this.run();
+                },
+
+                run() {
+                    this.stop();
+                    const lang = document.getElementById('exec-lang').value;
+                    const code = document.getElementById('exec-code').value;
+                    this.updateStageType(lang);
+
+                    const canvas = document.getElementById('exec-canvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    try {
+                        if (lang === 'js') {
+                            const self = this;
+                            const fakeConsole = {
+                                log: function () { self.log(Array.prototype.slice.call(arguments).join(' ')); },
+                                warn: function () { self.log(Array.prototype.slice.call(arguments).join(' '), 'console-info'); },
+                                error: function () { self.log(Array.prototype.slice.call(arguments).join(' '), 'console-err'); }
+                            };
+                            const factory = new Function(
+                                'ctx', 'width', 'height', 'keys', 'console',
+                                code + '\nreturn { update: typeof update === "function" ? update : null, draw: typeof draw === "function" ? draw : null };'
+                            );
+                            const api = factory(ctx, canvas.width, canvas.height, GameEngine.keys, fakeConsole);
+                            let prev = performance.now();
+
+                            const step = function (now) {
+                                if (!App.portalOpen) return;
+                                const dt = Math.min(0.05, (now - prev) / 1000);
+                                prev = now;
+                                try {
+                                    if (api.update) api.update(dt);
+                                    if (api.draw) api.draw(ctx);
+                                } catch (err) {
+                                    self.log('Erreur : ' + err.message, 'console-err');
+                                    self.stop();
+                                    return;
+                                }
+                                self.rafId = requestAnimationFrame(step);
+                            };
+
+                            if (api.update || api.draw) {
+                                self.rafId = requestAnimationFrame(step);
+                            }
+                        } else if (lang === 'html') {
+                            document.getElementById('exec-iframe').srcdoc = code;
+                            this.log('Aperçu HTML mis à jour.', 'console-info');
+                        } else if (lang === 'python') {
+                            this.execPython(code, ctx, canvas.width, canvas.height);
+                        } else if (lang === 'luau') {
+                            this.execLuau(code, ctx, canvas.width, canvas.height);
+                        } else if (lang === 'sql') {
+                            this.execSQL(code);
+                        }
+                    } catch (err) {
+                        this.log('Erreur : ' + err.message, 'console-err');
+                    }
+                },
+
+                execPython(code, ctx, w, h) {
+                    const env = {};
+                    let x = w / 2, y = h / 2, angle = 0;
+                    ctx.strokeStyle = '#22d3ee';
+                    ctx.lineWidth = 2.5;
+
+                    const evalVal = function (expr) {
+                        const s = expr.trim();
+                        if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+                            return s.slice(1, -1);
+                        }
+                        const safe = s.replace(/\b[a-zA-Z_]\w*\b/g, function (tok) {
+                            return Object.prototype.hasOwnProperty.call(env, tok) ? JSON.stringify(env[tok]) : tok;
+                        });
+                        return Function('"use strict";return (' + safe + ')')();
+                    };
+
+                    const runSingle = function (raw) {
+                        const line = raw.trim();
+                        if (!line || line.startsWith('#')) return;
+                        if (line.startsWith('print(') && line.endsWith(')')) {
+                            const args = line.slice(6, -1).split(',').map(evalVal);
+                            Executor.log(args.join(' '));
+                        } else if (line.startsWith('forward(') && line.endsWith(')')) {
+                            const dist = Number(evalVal(line.slice(8, -1))) || 0;
+                            const nx = x + Math.cos(angle) * dist;
+                            const ny = y + Math.sin(angle) * dist;
+                            ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(nx, ny); ctx.stroke();
+                            x = nx; y = ny;
+                        } else if (line.startsWith('right(') && line.endsWith(')')) {
+                            angle += (Number(evalVal(line.slice(6, -1))) || 0) * Math.PI / 180;
+                        } else if (line.indexOf('=') > -1 && line.indexOf('==') === -1) {
+                            const parts = line.split('=');
+                            env[parts[0].trim()] = evalVal(parts.slice(1).join('='));
+                        }
+                    };
+
+                    const lines = code.split('\n');
+                    let idx = 0;
+                    while (idx < lines.length) {
+                        const match = lines[idx].match(/^for\s+(\w+)\s+in\s+range\((\d+)\)\s*:/);
+                        if (match) {
+                            const varName = match[1];
+                            const count = Number(match[2]);
+                            const block = [];
+                            idx += 1;
+                            while (idx < lines.length && (lines[idx].startsWith('    ') || lines[idx].startsWith('\t'))) {
+                                block.push(lines[idx]);
+                                idx += 1;
+                            }
+                            for (let k = 0; k < count; k++) {
+                                env[varName] = k;
+                                for (let b = 0; b < block.length; b++) runSingle(block[b]);
+                            }
+                        } else {
+                            runSingle(lines[idx]);
+                            idx += 1;
+                        }
+                    }
+                },
+
+                execLuau(code, ctx, w, h) {
+                    ctx.fillStyle = '#090d16';
+                    ctx.fillRect(0, 0, w, h);
+                    const parts = {};
+
+                    code.split('\n').forEach(function (raw) {
+                        const l = raw.trim();
+                        if (!l || l.startsWith('--')) return;
+                        const mNew = l.match(/^local\s+(\w+)\s*=\s*Instance\.new\(["']Part["']\)/);
+                        if (mNew) {
+                            parts[mNew[1]] = { name: mNew[1], x: 100, y: 80, w: 100, h: 24, color: '#22d3ee' };
+                            return;
+                        }
+                        const mProp = l.match(/^(\w+)\.(Name|Position|Size|Color)\s*=\s*(.+)$/);
+                        if (mProp && parts[mProp[1]]) {
+                            const obj = parts[mProp[1]];
+                            const prop = mProp[2];
+                            const rhs = mProp[3].trim();
+                            if (prop === 'Name' || prop === 'Color') {
+                                obj[prop === 'Name' ? 'name' : 'color'] = rhs.replace(/["']/g, '');
+                            } else {
+                                const nums = rhs.match(/-?\d+(\.\d+)?/g);
+                                if (nums && nums.length >= 2) {
+                                    if (prop === 'Position') { obj.x = Number(nums[0]); obj.y = Number(nums[1]); }
+                                    if (prop === 'Size') { obj.w = Number(nums[0]); obj.h = Number(nums[1]); }
+                                }
+                            }
+                            return;
+                        }
+                        if (l.startsWith('print(') && l.endsWith(')')) {
+                            const out = l.slice(6, -1).split(',').map(function (tok) {
+                                const t = tok.trim();
+                                if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) return t.slice(1, -1);
+                                const mRef = t.match(/^(\w+)\.Name$/);
+                                if (mRef && parts[mRef[1]]) return parts[mRef[1]].name;
+                                return t;
+                            });
+                            Executor.log(out.join(' '));
+                        }
+                    });
+
+                    Object.keys(parts).forEach(function (k) {
+                        const p = parts[k];
+                        ctx.fillStyle = p.color;
+                        ctx.fillRect(p.x, p.y, p.w, p.h);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = '12px sans-serif';
+                        ctx.fillText(p.name, p.x, p.y - 6);
+                    });
+                },
+
+                execSQL(code) {
+                    const demoRows = [
+                        { nom: 'Camille', matiere: 'Maths', note: 16.5 },
+                        { nom: 'Lucas', matiere: 'NSI', note: 14.0 },
+                        { nom: 'Inès', matiere: 'Histoire', note: 11.5 },
+                        { nom: ' Mathis', matiere: 'Physique', note: 15.0 }
+                    ];
+                    const whereMatch = code.match(/WHERE\s+note\s*>=\s*(\d+(\.\d+)?)/i);
+                    const minNote = whereMatch ? parseFloat(whereMatch[1]) : 0;
+                    const rows = demoRows.filter(function (r) { return r.note >= minNote; });
+                    if (/ORDER\s+BY\s+note\s+DESC/i.test(code)) {
+                        rows.sort(function (a, b) { return b.note - a.note; });
+                    }
+                    const box = document.getElementById('exec-sql-box');
+                    box.innerHTML = '<table style="width:100%;border-collapse:collapse;color:#e2e8f0;">' +
+                        '<thead><tr style="background:#1e293b;"><th style="padding:6px;border:1px solid #334155;">nom</th><th style="padding:6px;border:1px solid #334155;">matiere</th><th style="padding:6px;border:1px solid #334155;">note</th></tr></thead>' +
+                        '<tbody>' + rows.map(function (r) {
+                            return '<tr><td style="padding:6px;border:1px solid #334155;">' + r.nom.trim() + '</td><td style="padding:6px;border:1px solid #334155;">' + r.matiere + '</td><td style="padding:6px;border:1px solid #334155;">' + r.note + '</td></tr>';
+                        }).join('') + '</tbody></table>';
+                    this.log(rows.length + ' ligne(s) affichée(s).', 'console-info');
+                }
+            };
+
+            /* ========================================================================
+               DÉMARRAGE SÉCURISÉ
+               ======================================================================== */
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () {
+                    try { App.init(); } catch (e) { console.error(e); }
+                });
+            } else {
+                try { App.init(); } catch (e) { console.error(e); }
+            }
+        })();
+    </script>
+</body>
+</html>
